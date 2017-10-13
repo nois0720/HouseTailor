@@ -1,0 +1,91 @@
+//
+//  ARObject.swift
+//  HouseTailor
+//
+//  Created by Yoo Seok Kim on 2017. 10. 11..
+//  Copyright © 2017년 Nois. All rights reserved.
+//
+import Foundation
+import SceneKit
+import ARKit
+
+struct ARObjectDefinition: Codable, Equatable {
+    let modelName: String
+    let displayName: String
+    let particleScaleInfo: [String: Float]
+
+    init(modelName: String, displayName: String, particleScaleInfo: [String: Float] = [:]) {
+        self.modelName = modelName
+        self.displayName = displayName
+        self.particleScaleInfo = particleScaleInfo
+    }
+
+    static func ==(lhs: ARObjectDefinition, rhs: ARObjectDefinition) -> Bool {
+        return lhs.modelName == rhs.modelName
+            && lhs.displayName == rhs.displayName
+            && lhs.particleScaleInfo == rhs.particleScaleInfo
+    }
+}
+
+class ARObject: SCNReferenceNode, ReactsToScale {
+    let definition: ARObjectDefinition
+
+    init(definition: ARObjectDefinition) {
+        self.definition = definition
+        guard let url = Bundle.main.url(forResource: "Models.scnassets/\(definition.modelName)/\(definition.modelName)", withExtension: "scn")
+            else { fatalError("can't find expected virtual object bundle resources") }
+        super.init(url: url)!
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // Use average of recent virtual object distances to avoid rapid changes in object scale.
+    var recentVirtualObjectDistances = [Float]()
+
+    func reactToScale() {
+        for (nodeName, particleSize) in definition.particleScaleInfo {
+            guard let node = self.childNode(withName: nodeName, recursively: true), let particleSystem = node.particleSystems?.first
+                else { continue }
+            particleSystem.reset()
+            particleSystem.particleSize = CGFloat(scale.x * particleSize)
+        }
+    }
+}
+
+extension ARObject {
+    static func isNodePartOfVirtualObject(_ node: SCNNode) -> ARObject? {
+        if let virtualObjectRoot = node as? ARObject {
+            return virtualObjectRoot
+        }
+
+        if node.parent != nil {
+            return isNodePartOfVirtualObject(node.parent!)
+        }
+
+        return nil
+    }
+
+}
+
+// MARK: - Protocols for Virtual Objects
+protocol ReactsToScale {
+    func reactToScale()
+}
+
+extension SCNNode {
+    func reactsToScale() -> ReactsToScale? {
+        if let canReact = self as? ReactsToScale {
+            return canReact
+        }
+
+        if parent != nil {
+            return parent!.reactsToScale()
+        }
+
+        return nil
+    }
+}
+
+

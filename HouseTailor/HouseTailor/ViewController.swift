@@ -10,8 +10,34 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController {
 
+    // MARK: - ARKit Config Properties
+    
+    var screenCenter: CGPoint?
+    
+    let session = ARSession()
+    let standardConfiguration: ARWorldTrackingConfiguration = {
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = .horizontal
+        return configuration
+    }()
+    
+    // MARK: - Virtual Object Manipulation Properties
+    
+    var dragOnInfinitePlanesEnabled = false
+//    var virtualObjectManager: VirtualObjectManager!
+//    
+//    var isLoadingObject: Bool = false {
+//        didSet {
+//            DispatchQueue.main.async {
+//                self.settingsButton.isEnabled = !self.isLoadingObject
+//                self.addObjectButton.isEnabled = !self.isLoadingObject
+//                self.restartExperienceButton.isEnabled = !self.isLoadingObject
+//            }
+//        }
+//    }
+    
     @IBOutlet var sceneView: ARSCNView!
     
     override func viewDidLoad() {
@@ -51,17 +77,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
+}
 
+extension ViewController: ARSCNViewDelegate {
     // MARK: - ARSCNViewDelegate
     
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
+    /*
+     // Override to create and configure nodes for anchors added to the view's session.
+     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+     let node = SCNNode()
      
-        return node
-    }
-*/
+     return node
+     }
+     */
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
