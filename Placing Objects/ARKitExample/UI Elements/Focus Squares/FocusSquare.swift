@@ -106,10 +106,10 @@ class FocusSquare: SCNNode {
 		
 		// Correct y rotation of camera square
 		if let camera = camera {
-			let tilt = abs(camera.eulerAngles.x)
-			let threshold1: Float = .pi / 2 * 0.65
+			let tilt = abs(camera.eulerAngles.x) // roll
+            let threshold1: Float = .pi / 2 * 0.65
 			let threshold2: Float = .pi / 2 * 0.75
-			let yaw = atan2f(camera.transform.columns.0.x, camera.transform.columns.1.x)
+            let yaw = atan2f(camera.transform.columns.0.x, camera.transform.columns.1.x) // y축 기준
 			var angle: Float = 0
 			
 			switch tilt {
@@ -325,7 +325,7 @@ class FocusSquare: SCNNode {
 
 		let planeNode = SCNNode()
 		planeNode.eulerAngles.x = .pi / 2 // Horizontal
-		planeNode.setUniformScale(focusSquareSize * scaleForClosedSquare)
+        planeNode.setUniformScale(focusSquareSize * scaleForClosedSquare)
 		planeNode.addChildNode(s1)
 		planeNode.addChildNode(s2)
 		planeNode.addChildNode(s3)

@@ -16,11 +16,6 @@ class TwoFingerGesture: Gesture {
     var firstTouch = UITouch()
     var secondTouch = UITouch()
     
-    let translationThreshold: CGFloat = 40
-    let translationThresholdHarder: CGFloat = 70
-    var translationThresholdPassed = false
-    var allowTranslation = false
-    var dragOffset = CGPoint()
     var initialMidPoint = CGPoint(x: 0, y: 0)
     
     let rotationThreshold: Float = .pi / 15 // (12°)
@@ -74,10 +69,10 @@ class TwoFingerGesture: Gesture {
         firstTouchedObject = allPoints.lazy.flatMap { point in
             return self.virtualObject(at: point)
         }.first
-        if let virtualObject = firstTouchedObject {
+        if let virtualObject = lastUsedObject {
+//        if let virtualObject = firstTouchedObject {
             objectBaseScale = CGFloat(virtualObject.scale.x)
             
-            allowTranslation = true
             allowRotation = true
             allowScaling = UserDefaults.standard.bool(for: .scaleWithPinchGesture)
             
@@ -90,7 +85,6 @@ class TwoFingerGesture: Gesture {
             initialFingerAngle = atan2(Float(midPoint2sndPoint.x), Float(midPoint2sndPoint.y))
             initialObjectAngle = virtualObject.eulerAngles.y
         } else {
-            allowTranslation = false
             allowRotation = false
             allowScaling = false
         }
@@ -101,11 +95,9 @@ class TwoFingerGesture: Gesture {
     override func updateGesture() {
         super.updateGesture()
         
-        guard let virtualObject = firstTouchedObject else {
-            return
-        }
+        guard let virtualObject = lastUsedObject else { return }
         
-        // Two finger touch enables combined translation, rotation and scale.
+        // Two finger touch enables combined rotation and scale.
         
         // First: Update the touches.
         let touches = Array(currentTouches)
@@ -123,50 +115,9 @@ class TwoFingerGesture: Gesture {
         let loc1 = firstTouch.location(in: sceneView)
         let loc2 = secondTouch.location(in: sceneView)
         
-        if allowTranslation {
-            // 1. Translation using the midpoint between the two fingers.
-            updateTranslation(of: virtualObject, midpoint: loc1.midpoint(loc2))
-        }
-        
         let spanBetweenTouches = loc1 - loc2
-        if allowRotation {
-            // 2. Rotation based on the relative rotation of the fingers on a unit circle.
-            updateRotation(of: virtualObject, span: spanBetweenTouches)
-        }
-        
-        if allowScaling {
-            // 3. Scale based on the distance between the fingers relative to initial distance.
-            updateScaling(span: spanBetweenTouches)
-        }
-    }
-    
-    func updateTranslation(of virtualObject: VirtualObject, midpoint: CGPoint) {
-        if !translationThresholdPassed {
-            
-            let initialLocationToCurrentLocation = midpoint - initialMidPoint
-            let distanceFromStartLocation = initialLocationToCurrentLocation.length()
-            
-            // Check if the translate gesture has crossed the threshold.
-            // If the user is already rotating and or scaling we use a bigger threshold.
-            
-            var threshold = translationThreshold
-            if rotationThresholdPassed || scaleThresholdPassed {
-                threshold = translationThresholdHarder
-            }
-            
-            if distanceFromStartLocation >= threshold {
-                translationThresholdPassed = true
-                
-                let currentObjectLocation = CGPoint(sceneView.projectPoint(virtualObject.position))
-                dragOffset = midpoint - currentObjectLocation
-            }
-        }
-        
-        if translationThresholdPassed {
-            let offsetPos = midpoint - dragOffset
-            objectManager.translate(virtualObject, in: sceneView, basedOn: offsetPos, instantly: false, infinitePlane: true)
-            lastUsedObject = virtualObject
-        }
+        if allowRotation { updateRotation(of: virtualObject, span: spanBetweenTouches) }
+        if allowScaling { updateScaling(span: spanBetweenTouches) }
     }
     
     func updateRotation(of virtualObject: VirtualObject, span: CGPoint) {
@@ -177,7 +128,7 @@ class TwoFingerGesture: Gesture {
         if !rotationThresholdPassed {
             var threshold = rotationThreshold
             
-            if translationThresholdPassed || scaleThresholdPassed {
+            if scaleThresholdPassed {
                 threshold = rotationThresholdHarder
             }
             
@@ -205,7 +156,7 @@ class TwoFingerGesture: Gesture {
     }
     
     func updateScaling(span: CGPoint) {
-        guard let virtualObject = firstTouchedObject else {
+        guard let virtualObject = lastUsedObject else {
             return
         }
         
@@ -216,7 +167,7 @@ class TwoFingerGesture: Gesture {
             
             var threshold = scaleThreshold
             
-            if translationThresholdPassed || rotationThresholdPassed {
+            if rotationThresholdPassed {
                 threshold = scaleThresholdHarder
             }
             

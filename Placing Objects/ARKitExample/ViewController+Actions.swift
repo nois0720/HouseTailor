@@ -57,6 +57,14 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
         }
     }
     
+    @IBAction func deleteObject(_ sender: Any) {
+        guard let lastUsedObject = virtualObjectManager.lastUsedObject else {
+            return
+        }
+        
+        virtualObjectManager.removeVirtualObject(at: lastUsedObject)
+    }
+    
     // MARK: - UIPopoverPresentationControllerDelegate
     
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {

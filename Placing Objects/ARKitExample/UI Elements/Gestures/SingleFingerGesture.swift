@@ -33,20 +33,20 @@ class SingleFingerGesture: Gesture {
         latestTouchLocation = initialTouchLocation
         
         firstTouchedObject = virtualObject(at: initialTouchLocation)
+        if firstTouchedObject == nil { self.lastUsedObject = nil }
     }
     
     // MARK: - Gesture Handling
     
     override func updateGesture() {
         super.updateGesture()
-        lastUsedObject?.setCategoryBitMask(1)
         
         guard let virtualObject = firstTouchedObject else {
+            lastUsedObject = nil
             return
         }
         
         lastUsedObject = virtualObject
-        virtualObject.setCategoryBitMask(2)
         latestTouchLocation = currentTouches.first!.location(in: sceneView)
         
         if !translationThresholdPassed {

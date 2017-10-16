@@ -19,6 +19,7 @@ class VirtualObjectManager {
             newValue?.setCategoryBitMask(2)
         }
         didSet {
+            if lastUsedObject == oldValue { return }
             oldValue?.setCategoryBitMask(1)
         }
     }
@@ -62,6 +63,16 @@ class VirtualObjectManager {
 			virtualObjects.remove(at: pos)
 		}
 	}
+    
+    func removeVirtualObject(at item: VirtualObject) {
+        guard let object = virtualObjects.first(where: { $0 == item })
+            else { return }
+        
+        unloadVirtualObject(object)
+        if let pos = virtualObjects.index(of: object) {
+            virtualObjects.remove(at: pos)
+        }
+    }
 	
 	private func unloadVirtualObject(_ object: VirtualObject) {
 		updateQueue.async {
@@ -89,7 +100,7 @@ class VirtualObjectManager {
             // Immediately place the object in 3D space.
             self.updateQueue.async {
                 self.setNewVirtualObjectPosition(object, to: position, cameraTransform: cameraTransform)
-                self.lastUsedObject = object
+                //self.lastUsedObject = object
                 self.delegate?.virtualObjectManager(self, didLoad: object)
             }
         }
@@ -102,14 +113,16 @@ class VirtualObjectManager {
 	func reactToTouchesBegan(_ touches: Set<UITouch>, with event: UIEvent?, in sceneView: ARSCNView) {
 		if virtualObjects.isEmpty { return }
 		
-		if currentGesture == nil {
+		if currentGesture == nil { // single
 			currentGesture = Gesture.startGestureFromTouches(touches, sceneView, lastUsedObject, self)
-		} else {
+		} else { // single to multi
 			currentGesture = currentGesture!.updateGestureFromTouches(touches, .touchBegan)
 		}
-        
+
         if let newObject = currentGesture?.lastUsedObject {
             lastUsedObject = newObject
+        } else {
+            lastUsedObject = nil
         }
 	}
 	
@@ -117,9 +130,9 @@ class VirtualObjectManager {
 		if virtualObjects.isEmpty { return }
 		
 		currentGesture = currentGesture?.updateGestureFromTouches(touches, .touchMoved)
-		if let newObject = currentGesture?.lastUsedObject {
-			lastUsedObject = newObject
-		}
+        if let newObject = currentGesture?.lastUsedObject {
+            lastUsedObject = newObject
+        }
 		
 		if let gesture = currentGesture, let object = gesture.lastUsedObject {
 			delegate?.virtualObjectManager(self, transformDidChangeFor: object)
@@ -337,7 +350,7 @@ class VirtualObjectManager {
 		let unfilteredFeatureHitTestResults = sceneView.hitTestWithFeatures(position)
 		if !unfilteredFeatureHitTestResults.isEmpty {
 			let result = unfilteredFeatureHitTestResults[0]
-			return (result.position, nil, false)
+        	return (result.position, nil, false)
 		}
 		
 		return (nil, nil, false)

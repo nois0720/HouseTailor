@@ -27,7 +27,7 @@ extension Array where Iterator.Element == float3 {
 		guard !self.isEmpty else {
 			return nil
 		}
-  
+        
         let sum = self.reduce(float3(0)) { current, next in
             return current + next
         }
