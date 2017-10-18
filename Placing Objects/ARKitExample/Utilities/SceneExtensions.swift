@@ -17,14 +17,14 @@ extension ARSCNView {
 		automaticallyUpdatesLighting = false
 		
 		preferredFramesPerSecond = 60
-		contentScaleFactor = 1.3
+		contentScaleFactor = 2.0
 		
 		if let camera = pointOfView?.camera {
-			camera.wantsHDR = true
-			camera.wantsExposureAdaptation = true
-			camera.exposureOffset = -1
-			camera.minimumExposure = -1
-			camera.maximumExposure = 3
+            camera.wantsHDR = true
+            camera.wantsExposureAdaptation = true
+            camera.exposureOffset = -1
+            camera.minimumExposure = -1
+            camera.maximumExposure = 3
 		}
 	}
 }

@@ -75,7 +75,7 @@ class VirtualObjectManager {
     }
 	
 	private func unloadVirtualObject(_ object: VirtualObject) {
-		updateQueue.async {
+		updateQueue.async { // 왜 serial queue를 사용?
 			object.unload()
 			object.removeFromParentNode()
 			if self.lastUsedObject == object {

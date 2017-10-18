@@ -6,4 +6,18 @@
 //  Copyright © 2017년 Apple. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import SceneKit
+
+extension ViewController: ModeSelectionViewControllerDelegate {
+    
+    // MARK: - VirtualObjectManager delegate callbacks
+    func modeSelectionViewController(_: ModeSelectionViewController, didSelectModeAt index: Int) {
+        if index == 0 {
+            print("furniture mode")
+        } else {
+            print("measure mode")
+        }
+    }
+    
+}

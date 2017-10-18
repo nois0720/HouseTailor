@@ -59,8 +59,4 @@ extension ViewController: VirtualObjectSelectionViewControllerDelegate, VirtualO
         }
     }
     
-    func virtualObjectSelectionViewController(_: VirtualObjectSelectionViewController, didDeselectObjectAt index: Int) {
-        virtualObjectManager.removeVirtualObject(at: index)
-    }
-    
 }

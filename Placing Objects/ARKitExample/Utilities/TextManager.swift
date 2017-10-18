@@ -93,11 +93,12 @@ class TextManager {
 				// We limit the duration to a range of 1-10 seconds.
 				let charCount = text.characters.count
 				let displayDuration: TimeInterval = min(10, Double(charCount) / 15.0 + 1.0)
-				self.messageHideTimer = Timer.scheduledTimer(withTimeInterval: displayDuration,
-				                                        repeats: false,
-				                                        block: { [weak self] ( _ ) in
-															self?.showHideMessage(hide: true, animated: true)
-				})
+				self.messageHideTimer =
+                    Timer.scheduledTimer(withTimeInterval: displayDuration,
+                                         repeats: false,
+                                         block: { [weak self] ( _ ) in
+                                            self?.showHideMessage(hide: true, animated: true)
+                                        })
 			}
 		}
 	}

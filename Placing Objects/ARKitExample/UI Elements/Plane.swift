@@ -13,7 +13,6 @@ class Plane: SCNNode {
     // MARK: - Properties
     
 	var anchor: ARPlaneAnchor
-	var focusSquare: FocusSquare?
     
     // MARK: - Initialization
     

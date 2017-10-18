@@ -10,12 +10,11 @@ import UIKit
 enum Setting: String {
     case scaleWithPinchGesture
     case dragOnInfinitePlanes
-    case measureMode
     
     static func registerDefaults() {
-        UserDefaults.standard.register(defaults: [
-            Setting.dragOnInfinitePlanes.rawValue: true
-        ])
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(true, for: .scaleWithPinchGesture)
+        userDefaults.set(true, for: .dragOnInfinitePlanes)
     }
 }
 
@@ -34,7 +33,6 @@ class SettingsViewController: UITableViewController {
     
 	@IBOutlet weak var scaleWithPinchGestureSwitch: UISwitch!
 	@IBOutlet weak var dragOnInfinitePlanesSwitch: UISwitch!
-    @IBOutlet weak var measureModeSwitch: UISwitch!
     
     // MARK: - View Life Cycle
     
@@ -49,7 +47,6 @@ class SettingsViewController: UITableViewController {
         let defaults = UserDefaults.standard
         scaleWithPinchGestureSwitch.isOn = defaults.bool(for: .scaleWithPinchGesture)
         dragOnInfinitePlanesSwitch.isOn = defaults.bool(for: .dragOnInfinitePlanes)
-        measureModeSwitch.isOn = defaults.bool(for: .measureMode)
     }
     
     override func viewWillLayoutSubviews() {
@@ -65,8 +62,6 @@ class SettingsViewController: UITableViewController {
                 defaults.set(sender.isOn, for: .scaleWithPinchGesture)
             case dragOnInfinitePlanesSwitch:
                 defaults.set(sender.isOn, for: .dragOnInfinitePlanes)
-            case measureModeSwitch:
-                defaults.set(sender.isOn, for: .measureMode)
             default: break
 		}
 	}

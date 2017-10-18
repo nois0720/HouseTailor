@@ -9,6 +9,11 @@ import ARKit
 import SceneKit
 import UIKit
 
+enum Mode {
+    case furniture
+    case measure
+}
+
 class ViewController: UIViewController {
     
     // MARK: - ARKit Config Properties
@@ -16,6 +21,7 @@ class ViewController: UIViewController {
     var screenCenter: CGPoint?
 
     let session = ARSession()
+    
     let standardConfiguration: ARWorldTrackingConfiguration = {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
@@ -41,6 +47,11 @@ class ViewController: UIViewController {
     
     var textManager: TextManager!
     var restartExperienceButtonIsEnabled = true
+    var mode = Mode.furniture {
+        willSet {
+            
+        }
+    }
     
     // MARK: - UI Elements
     
@@ -52,13 +63,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var settingsButton: UIButton!
     @IBOutlet weak var addObjectButton: UIButton!
     @IBOutlet weak var restartExperienceButton: UIButton!
+    @IBOutlet weak var recordButton: UIButton!
     
     // MARK: - Queues
-    
-	let serialQueue = DispatchQueue(label: "com.apple.arkitexample.serialSceneKitQueue")
+	let serialQueue = DispatchQueue(label: "serialSceneKitQueue")
 	
     // MARK: - View Controller Life Cycle
-    
+    // 뷰컨트롤러의 라이프사이클에 따라서 처리한 것들. viewDidLoad전에 처리했을까.
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -68,7 +79,7 @@ class ViewController: UIViewController {
         
         if let path = Bundle.main.path(forResource: "NodeTechnique", ofType: "plist") {
             if let dict = NSDictionary(contentsOfFile: path)  {
-                let dict2 = dict as! [String : AnyObject]
+                let dict2 = dict as! [String: AnyObject]
                 let technique = SCNTechnique(dictionary:dict2)
                 sceneView.technique = technique
             }
@@ -99,6 +110,16 @@ class ViewController: UIViewController {
 	
     // MARK: - Setup
     
+    func setupUIControls() {
+        textManager = TextManager(viewController: self)
+        
+        // Set appearance of message output panel
+        messagePanel.layer.cornerRadius = 3.0
+        messagePanel.clipsToBounds = true
+        messagePanel.isHidden = true
+        messageLabel.text = ""
+    }
+    
 	func setupScene() {
         // Synchronize updates via the `serialQueue`.
         virtualObjectManager = VirtualObjectManager(updateQueue: serialQueue)
@@ -119,16 +140,6 @@ class ViewController: UIViewController {
 			self.screenCenter = self.sceneView.bounds.mid
 		}
 	}
-    
-    func setupUIControls() {
-        textManager = TextManager(viewController: self)
-        
-        // Set appearance of message output panel
-        messagePanel.layer.cornerRadius = 3.0
-        messagePanel.clipsToBounds = true
-        messagePanel.isHidden = true
-        messageLabel.text = ""
-    }
 	
     // MARK: - Gesture Recognizers
 	
@@ -141,10 +152,6 @@ class ViewController: UIViewController {
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if virtualObjectManager.virtualObjects.isEmpty {
-			chooseObject(addObjectButton)
-			return
-		}
 		virtualObjectManager.reactToTouchesEnded(touches, with: event)
 	}
 	
@@ -160,6 +167,7 @@ class ViewController: UIViewController {
         
 		let plane = Plane(anchor)
 		planes[anchor] = plane
+        
 		node.addChildNode(plane)
 		
 		textManager.cancelScheduledMessage(forType: .planeEstimation)

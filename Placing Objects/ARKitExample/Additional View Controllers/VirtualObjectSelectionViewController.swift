@@ -28,12 +28,10 @@ class ObjectCell: UITableViewCell {
 
 protocol VirtualObjectSelectionViewControllerDelegate: class {
     func virtualObjectSelectionViewController(_: VirtualObjectSelectionViewController, didSelectObjectAt index: Int)
-    func virtualObjectSelectionViewController(_: VirtualObjectSelectionViewController, didDeselectObjectAt index: Int)
 }
 
 class VirtualObjectSelectionViewController: UITableViewController {
 
-    private var selectedVirtualObjectRows = IndexSet()
     weak var delegate: VirtualObjectSelectionViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -43,18 +41,14 @@ class VirtualObjectSelectionViewController: UITableViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        preferredContentSize = CGSize(width: 250, height: tableView.contentSize.height)
+        preferredContentSize = CGSize(width: 130, height: tableView.contentSize.height)
     }
     
     // MARK: - UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Check if the current row is already selected, then deselect it.
-        if selectedVirtualObjectRows.contains(indexPath.row) {
-            delegate?.virtualObjectSelectionViewController(self, didDeselectObjectAt: indexPath.row)
-        } else {
-            delegate?.virtualObjectSelectionViewController(self, didSelectObjectAt: indexPath.row)
-        }
+        delegate?.virtualObjectSelectionViewController(self, didSelectObjectAt: indexPath.row)
+        
         self.dismiss(animated: true, completion: nil)
     }
         
@@ -70,12 +64,6 @@ class VirtualObjectSelectionViewController: UITableViewController {
         }
         
         cell.object = VirtualObjectManager.availableObjects[indexPath.row]
-
-        if selectedVirtualObjectRows.contains(indexPath.row) {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
         return cell
     }
     

@@ -33,6 +33,8 @@
 		C8C12A711F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */; };
 		E51C5B5B1F8F0C3400788324 /* NodeTechnique.plist in Resources */ = {isa = PBXBuildFile; fileRef = E51C5B591F8F0C3400788324 /* NodeTechnique.plist */; };
 		E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */ = {isa = PBXBuildFile; fileRef = E51C5B5A1F8F0C3400788324 /* NodeRender.metal */; };
+		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
+		E5A782C81F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +69,8 @@
 		C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ARSCNViewDelegate.swift"; sourceTree = "<group>"; };
 		E51C5B591F8F0C3400788324 /* NodeTechnique.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = NodeTechnique.plist; path = ARKitExample/NodeTechnique.plist; sourceTree = SOURCE_ROOT; };
 		E51C5B5A1F8F0C3400788324 /* NodeRender.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = NodeRender.metal; path = ARKitExample/NodeRender.metal; sourceTree = SOURCE_ROOT; };
+		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
+		E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ModeSelectionViewController.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,7 @@
 			children = (
 				39C0B9571E9C6B1F003FCA0C /* SettingsViewController.swift */,
 				147062631F06FA790003EE03 /* VirtualObjectSelectionViewController.swift */,
+				E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */,
 			);
 			path = "Additional View Controllers";
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 				C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */,
 				1488323E1EFC378A0043E0AB /* ViewController+Actions.swift */,
 				147D76491EFC36070000FEBF /* ViewController+ObjectSelection.swift */,
+				E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */,
 				1488324B1EFC3EBF0043E0AB /* Additional View Controllers */,
 				C40DF57B1EC2330700D9D59E /* Virtual Objects */,
 				113B64D01ECA81CA0071CBD1 /* UI Elements */,
@@ -283,7 +289,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				11BD822A1F09D750003F11C8 /* ViewController+ObjectSelection.swift in Sources */,
+				E5A782C81F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift in Sources */,
 				1488323F1EFC378A0043E0AB /* ViewController+Actions.swift in Sources */,
+				E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */,
 				3929C48E1E89EC2C00E00B60 /* ViewController.swift in Sources */,
 				E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */,
 				C41366B91EB80DD400EC054A /* TextManager.swift in Sources */,
