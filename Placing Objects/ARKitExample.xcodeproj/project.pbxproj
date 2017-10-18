@@ -35,6 +35,7 @@
 		E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */ = {isa = PBXBuildFile; fileRef = E51C5B5A1F8F0C3400788324 /* NodeRender.metal */; };
 		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
 		E5A782C81F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */; };
+		E5A782CB1F971EE1003C87BB /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782CA1F971EE1003C87BB /* Line.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +72,7 @@
 		E51C5B5A1F8F0C3400788324 /* NodeRender.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = NodeRender.metal; path = ARKitExample/NodeRender.metal; sourceTree = SOURCE_ROOT; };
 		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
 		E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ModeSelectionViewController.swift"; sourceTree = "<group>"; };
+		E5A782CA1F971EE1003C87BB /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				392BB82B1EA19A7C00FBBAC8 /* Plane.swift */,
 				148832461EFC3C970043E0AB /* Gestures */,
 				148832471EFC3C9F0043E0AB /* Focus Squares */,
+				E5A782C91F971EBA003C87BB /* Lines */,
 			);
 			path = "UI Elements";
 			sourceTree = "<group>";
@@ -211,6 +214,14 @@
 			path = "Virtual Objects";
 			sourceTree = "<group>";
 		};
+		E5A782C91F971EBA003C87BB /* Lines */ = {
+			isa = PBXGroup;
+			children = (
+				E5A782CA1F971EE1003C87BB /* Line.swift */,
+			);
+			path = Lines;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -308,6 +319,7 @@
 				148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */,
 				148832431EFC3BE00043E0AB /* SingleFingerGesture.swift in Sources */,
 				C42A71BD1E9C0AF200944367 /* FocusSquare.swift in Sources */,
+				E5A782CB1F971EE1003C87BB /* Line.swift in Sources */,
 				3929C48C1E89EC2C00E00B60 /* AppDelegate.swift in Sources */,
 				C46356681EF9CC530080C8D9 /* VirtualObjectManager.swift in Sources */,
 			);

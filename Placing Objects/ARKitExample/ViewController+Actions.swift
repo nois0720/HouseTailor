@@ -33,8 +33,12 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         // Abort if we are about to load another object to avoid concurrent modifications of the scene.
         if isLoadingObject { return }
         
-        textManager.cancelScheduledMessage(forType: .contentPlacement)
-        performSegue(withIdentifier: SegueIdentifier.showObjects.rawValue, sender: button)
+        if mode == .furniture {
+            textManager.cancelScheduledMessage(forType: .contentPlacement)
+            performSegue(withIdentifier: SegueIdentifier.showObjects.rawValue, sender: button)
+        } else {
+            createPin()
+        }
     }
 
     @IBAction func chooseMode(_ button: UIButton) {
@@ -84,6 +88,24 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
                 return
             }
             print("record start")
+        }
+    }
+    
+    private func createPin() {
+        guard let currentFrame = sceneView.session.currentFrame else {
+            return
+        }
+        
+        if isMeasuring {
+            isMeasuring = false
+            currentLine = nil
+        } else {
+            let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
+            if let result = planeHitTestResults.first {
+                let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+                currentLine = Line(sceneView: sceneView, startNodePos: hitPosition)
+                isMeasuring = true
+            }
         }
     }
     

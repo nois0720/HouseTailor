@@ -28,6 +28,14 @@ class ViewController: UIViewController {
         return configuration
     }()
     
+    // MARK: AR Measure Properties
+    
+    var startNode: SCNNode?
+    var endNode: SCNNode?
+    var lines: [Line] = []
+    var currentLine: Line?
+    var isMeasuring: Bool = false
+    
     // MARK: - Virtual Object Manipulation Properties
     
     var dragOnInfinitePlanesEnabled = false
@@ -49,7 +57,11 @@ class ViewController: UIViewController {
     var restartExperienceButtonIsEnabled = true
     var mode = Mode.furniture {
         willSet {
-            
+            if newValue == .furniture {
+                pinSetterView.isHidden = true
+            } else {
+                pinSetterView.isHidden = false
+            }
         }
     }
     
@@ -64,6 +76,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var addObjectButton: UIButton!
     @IBOutlet weak var restartExperienceButton: UIButton!
     @IBOutlet weak var recordButton: UIButton!
+    
+    @IBOutlet weak var pinSetterView: UIView!
     
     // MARK: - Queues
 	let serialQueue = DispatchQueue(label: "serialSceneKitQueue")
@@ -118,6 +132,10 @@ class ViewController: UIViewController {
         messagePanel.clipsToBounds = true
         messagePanel.isHidden = true
         messageLabel.text = ""
+        
+        pinSetterView.layer.cornerRadius = 3.0
+        pinSetterView.clipsToBounds = true
+        pinSetterView.isHidden = true
     }
     
 	func setupScene() {

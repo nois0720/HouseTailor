@@ -145,10 +145,13 @@
                                     <action selector="startRecord:" destination="BV1-FR-VrT" eventType="touchUpInside" id="xcc-If-nKc"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xz3-j7-4K9">
-                                <rect key="frame" x="182" y="328" width="10" height="10"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xz3-j7-4K9" userLabel="Pin Setter View">
+                                <rect key="frame" x="184" y="330" width="6" height="6"/>
                                 <color key="backgroundColor" red="1" green="0.74230831185567014" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="6" id="VDg-Km-XR8"/>
+                                    <constraint firstAttribute="width" constant="6" id="nzP-lH-hmk"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -172,12 +175,15 @@
                             <constraint firstItem="xcf-ic-uGo" firstAttribute="centerX" secondItem="GBj-4O-Whc" secondAttribute="centerX" id="ZCe-ld-yQW"/>
                             <constraint firstItem="9e0-zv-RiN" firstAttribute="leading" secondItem="j8v-6q-UBb" secondAttribute="trailing" constant="15" id="iIf-WZ-kZj"/>
                             <constraint firstItem="GBj-4O-Whc" firstAttribute="trailing" secondItem="E6c-py-dvH" secondAttribute="trailing" id="lHd-lf-g1u"/>
+                            <constraint firstItem="Xz3-j7-4K9" firstAttribute="centerY" secondItem="E6c-py-dvH" secondAttribute="centerY" id="oBu-Uj-BXo"/>
                             <constraint firstItem="GBj-4O-Whc" firstAttribute="bottom" secondItem="xcf-ic-uGo" secondAttribute="bottom" constant="15" id="sOL-M5-nW8"/>
                             <constraint firstItem="GBj-4O-Whc" firstAttribute="bottom" secondItem="wcv-F5-fv2" secondAttribute="bottom" constant="15" id="vLk-w8-8GJ"/>
+                            <constraint firstItem="Xz3-j7-4K9" firstAttribute="centerX" secondItem="E6c-py-dvH" secondAttribute="centerX" id="zmX-te-Qb3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="GBj-4O-Whc"/>
                     </view>
                     <connections>
+                        <outlet property="PinSetterView" destination="Xz3-j7-4K9" id="aam-hX-AsO"/>
                         <outlet property="addObjectButton" destination="xcf-ic-uGo" id="uFa-W2-4Iu"/>
                         <outlet property="messageLabel" destination="Mqz-65-rAs" id="G3a-qn-5g9"/>
                         <outlet property="messagePanel" destination="9e0-zv-RiN" id="pKf-hp-Dvx"/>

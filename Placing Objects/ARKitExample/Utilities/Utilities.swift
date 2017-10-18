@@ -250,6 +250,30 @@ func SCNVector3Uniform(_ value: CGFloat) -> SCNVector3 {
     return SCNVector3Make(Float(value), Float(value), Float(value))
 }
 
+func distance(startNode: SCNNode, endNode: SCNNode) -> Float {
+    let vector = SCNVector3Make(startNode.position.x - endNode.position.x, startNode.position.y - endNode.position.y, startNode.position.z - endNode.position.z)
+    // Scene units map to meters in ARKit.
+    return sqrtf(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+}
+
+func distance(startPos: SCNVector3, endPos: SCNVector3) -> Float {
+    let vector = SCNVector3Make(startPos.x - endPos.x, startPos.y - endPos.y, startPos.z - endPos.z)
+    // Scene units map to meters in ARKit.
+    return sqrtf(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+}
+
+func lineSCNNode(from v1: SCNVector3, to v2: SCNVector3, color: UIColor = .black) -> SCNNode {
+    let indices: [Int32] = [0, 1]
+    let source = SCNGeometrySource(vertices: [v1, v2])
+    let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+    
+    let geometry = SCNGeometry(sources: [source], elements: [element])
+    geometry.firstMaterial?.diffuse.contents = color
+    
+    let node = SCNNode(geometry: geometry)
+    return node
+}
+
 func + (left: SCNVector3, right: SCNVector3) -> SCNVector3 {
     return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
 }

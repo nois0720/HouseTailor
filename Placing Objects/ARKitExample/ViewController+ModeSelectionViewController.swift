@@ -15,8 +15,10 @@ extension ViewController: ModeSelectionViewControllerDelegate {
     func modeSelectionViewController(_: ModeSelectionViewController, didSelectModeAt index: Int) {
         if index == 0 {
             print("furniture mode")
+            mode = .furniture
         } else {
             print("measure mode")
+            mode = .measure
         }
     }
     

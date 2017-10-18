@@ -10,11 +10,6 @@ import UIKit
 
 // MARK: - ObjectCell
 
-enum Mode {
-    case furniture
-    case measure
-}
-
 class ModeCell: UITableViewCell {
     
     static let reuseIdentifier = "ModeCell"
@@ -38,7 +33,7 @@ class ModeSelectionViewController: UITableViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        preferredContentSize = CGSize(width: 250, height: tableView.contentSize.height)
+        preferredContentSize = CGSize(width: 130, height: tableView.contentSize.height)
     }
     
     // MARK: - UITableViewDelegate

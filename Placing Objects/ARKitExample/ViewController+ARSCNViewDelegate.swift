@@ -13,6 +13,17 @@ extension ViewController: ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         updateFocusSquare()
         
+        // Update current line
+        if isMeasuring {
+//            DispatchQueue.main.async { [unowned self] in
+                let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlaneUsingExtent)
+                if let result = planeHitTestResults.first {
+                    let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+                    self.currentLine?.update(to: hitPosition)
+                }
+//            }
+        }
+        
         // If light estimation is enabled, update the intensity of the model's lights and the environment map
         if let lightEstimate = session.currentFrame?.lightEstimate {
             sceneView.scene.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40, queue: serialQueue)
