@@ -11,7 +11,6 @@ import SceneKit
 
 class Line {
     
-    // private properties
     private var startNode: SCNNode!     // 시작 노드
     private var endNode: SCNNode!       // 끝 노드
     private var lenText: SCNText!       // 길이 텍스트
@@ -43,20 +42,27 @@ class Line {
         endNode = SCNNode(geometry: sphere)
         endNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
         
+        // length text. unit: meter
         lenText = SCNText(string: "", extrusionDepth: textDepth)
         lenText.font = .systemFont(ofSize: 4)
         lenText.firstMaterial?.diffuse.contents = textColor
-        lenText.alignmentMode  = kCAAlignmentJustified
+        lenText.alignmentMode = kCAAlignmentJustified
         lenText.firstMaterial?.isDoubleSided = true
   
+        // SCNText constraint
+        let constraint = SCNLookAtConstraint(target: sceneView.pointOfView)
+        constraint.isGimbalLockEnabled = true // roll axis 기준 회전을 막아 pov와 수평을 이루도록 함
+
+        // Documentation에 따르면, SCNLookAtConstraint를 사용하면, constraint가 적용된 노드의
+        // negative z-axis가 constraint의 타겟 노드를 바라보도록 업데이트 됨.
+        // 따라서, 업데이트의 영향을 받지 않는 하위 WrapperNode를 만들어 해당 노드의 yaw를 pi만큼 돌려주고
+        // 이를 상위 노드에 추가.
         let textWrapperNode = SCNNode(geometry: lenText)
         textWrapperNode.eulerAngles = SCNVector3Make(0, .pi, 0)
         textWrapperNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
         
         lenTextNode = SCNNode()
         lenTextNode.addChildNode(textWrapperNode)
-        let constraint = SCNLookAtConstraint(target: sceneView.pointOfView)
-        constraint.isGimbalLockEnabled = true
         lenTextNode.constraints = [constraint]
         sceneView.scene.rootNode.addChildNode(lenTextNode)
     }
