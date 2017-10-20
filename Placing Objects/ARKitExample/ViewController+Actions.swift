@@ -92,13 +92,15 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     }
     
     private func createPin() {
-        guard let currentFrame = sceneView.session.currentFrame else {
-            return
-        }
-        
         if isMeasuring {
+            // @IBAction
+            // ViewController's lines(Array)에 line 추가
             isMeasuring = false
-            currentLine = nil
+            
+            if let currentLine = currentLine {
+                lines.append(currentLine)
+                self.currentLine = nil
+            }
         } else {
             let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
             if let result = planeHitTestResults.first {

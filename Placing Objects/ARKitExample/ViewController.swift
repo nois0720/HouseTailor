@@ -132,7 +132,6 @@ class ViewController: UIViewController {
         messagePanel.clipsToBounds = true
         messagePanel.isHidden = true
         messageLabel.text = ""
-        
         pinSetterView.layer.cornerRadius = 3.0
         pinSetterView.clipsToBounds = true
         pinSetterView.isHidden = true

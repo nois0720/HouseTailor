@@ -1,9 +1,9 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-ARSCNViewDelegate interactions for `ViewController`.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ ARSCNViewDelegate interactions for `ViewController`.
+ */
 
 import ARKit
 
@@ -15,13 +15,11 @@ extension ViewController: ARSCNViewDelegate {
         
         // Update current line
         if isMeasuring {
-//            DispatchQueue.main.async { [unowned self] in
-                let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlaneUsingExtent)
-                if let result = planeHitTestResults.first {
-                    let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
-                    self.currentLine?.update(to: hitPosition)
-                }
-//            }
+            let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
+            if let result = planeHitTestResults.first {
+                let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+                self.currentLine?.update(to: hitPosition)
+            }
         }
         
         // If light estimation is enabled, update the intensity of the model's lights and the environment map
@@ -34,6 +32,9 @@ extension ViewController: ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        
+        print("plane Detection!")
+        
         serialQueue.async {
             self.addPlane(node: node, anchor: planeAnchor)
             self.virtualObjectManager.checkIfObjectShouldMoveOntoPlane(anchor: planeAnchor, planeAnchorNode: node)

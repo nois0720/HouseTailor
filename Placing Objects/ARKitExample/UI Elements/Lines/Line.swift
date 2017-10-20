@@ -47,8 +47,7 @@ class Line {
         lenText.font = .systemFont(ofSize: 4)
         lenText.firstMaterial?.diffuse.contents = textColor
         lenText.alignmentMode = kCAAlignmentJustified
-        lenText.firstMaterial?.isDoubleSided = true
-  
+        
         // SCNText constraint
         let constraint = SCNLookAtConstraint(target: sceneView.pointOfView)
         constraint.isGimbalLockEnabled = true // roll axis 기준 회전을 막아 pov와 수평을 이루도록 함
@@ -70,7 +69,7 @@ class Line {
     func update(to vector: SCNVector3) {
         lineNode?.removeFromParentNode()
         lineNode = lineSCNNode(from: startNodePos, to: vector, color: lineColor)
-        
+        lineNode?.categoryBitMask = 2
         sceneView.scene.rootNode.addChildNode(lineNode!)
 
         lenText.string = String(format: "%.2f m", distance(startPos: startNodePos, endPos: vector))
@@ -81,6 +80,7 @@ class Line {
         endNode.position = vector
         if endNode.parent == nil {
             sceneView?.scene.rootNode.addChildNode(endNode)
+            
         }
     }
     
@@ -89,6 +89,11 @@ class Line {
         lineNode?.removeFromParentNode()
         endNode.removeFromParentNode()
         lenTextNode.removeFromParentNode()
+    }
+    
+    func delete() {
+        removeFromParentNode()
+        self.removeFromParentNode()
     }
     
 }

@@ -16,6 +16,8 @@ extension ViewController: ModeSelectionViewControllerDelegate {
         if index == 0 {
             print("furniture mode")
             mode = .furniture
+            lines.forEach { $0.delete() }
+            lines.removeAll()
         } else {
             print("measure mode")
             mode = .measure
