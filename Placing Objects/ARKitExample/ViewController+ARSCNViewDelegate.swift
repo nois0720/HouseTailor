@@ -18,6 +18,7 @@ extension ViewController: ARSCNViewDelegate {
             let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
             if let result = planeHitTestResults.first {
                 let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+                
                 self.currentLine?.update(to: hitPosition)
             }
         }

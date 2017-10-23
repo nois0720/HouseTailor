@@ -146,8 +146,8 @@ class ViewController: UIViewController {
 		sceneView.setup()
 		sceneView.delegate = self
 		sceneView.session = session
-        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-		// sceneView.showsStatistics = true
+//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+        sceneView.showsStatistics = true
 		
 		sceneView.scene.enableEnvironmentMapWithIntensity(25, queue: serialQueue)
 		

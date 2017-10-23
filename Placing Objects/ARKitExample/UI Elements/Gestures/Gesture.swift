@@ -63,9 +63,11 @@ class Gesture {
         let hitTestOptions: [SCNHitTestOption: Any] = [.boundingBoxOnly: true]
         let hitTestResults: [SCNHitTestResult] = sceneView.hitTest(point, options: hitTestOptions)
         
-        return hitTestResults.lazy.flatMap { result in
+        let hitVO = hitTestResults.lazy.flatMap { result in
             VirtualObject.isNodePartOfVirtualObject(result.node)
-        }.first
+            }.first
+        
+        return hitVO
     }
     
     // MARK: - Gesture Handling

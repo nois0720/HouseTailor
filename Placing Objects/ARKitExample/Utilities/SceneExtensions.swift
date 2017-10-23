@@ -13,13 +13,13 @@ import ARKit
 extension ARSCNView {
 	
 	func setup() {
-//        antialiasingMode = .multisampling4X
 		automaticallyUpdatesLighting = false
 		
 		preferredFramesPerSecond = 60
 		contentScaleFactor = 2.0
 		
 		if let camera = pointOfView?.camera {
+            camera.automaticallyAdjustsZRange = true
             camera.wantsHDR = true
             camera.wantsExposureAdaptation = true
             camera.exposureOffset = -1

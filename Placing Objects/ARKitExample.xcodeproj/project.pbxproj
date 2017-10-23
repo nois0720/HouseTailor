@@ -14,7 +14,7 @@
 		148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148832401EFC3B250043E0AB /* FocusSquareSegment.swift */; };
 		148832431EFC3BE00043E0AB /* SingleFingerGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148832421EFC3BE00043E0AB /* SingleFingerGesture.swift */; };
 		148832451EFC3C160043E0AB /* TwoFingerGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148832441EFC3C160043E0AB /* TwoFingerGesture.swift */; };
-		148832491EFC3E520043E0AB /* ARSCNView+HitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148832481EFC3E520043E0AB /* ARSCNView+HitTests.swift */; };
+		148832491EFC3E520043E0AB /* ARSCNViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148832481EFC3E520043E0AB /* ARSCNViewExtensions.swift */; };
 		3929C48C1E89EC2C00E00B60 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929C48B1E89EC2C00E00B60 /* AppDelegate.swift */; };
 		3929C48E1E89EC2C00E00B60 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3929C48D1E89EC2C00E00B60 /* ViewController.swift */; };
 		3929C4911E89EC2C00E00B60 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3929C48F1E89EC2C00E00B60 /* Main.storyboard */; };
@@ -47,7 +47,7 @@
 		148832401EFC3B250043E0AB /* FocusSquareSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSquareSegment.swift; sourceTree = "<group>"; };
 		148832421EFC3BE00043E0AB /* SingleFingerGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleFingerGesture.swift; sourceTree = "<group>"; };
 		148832441EFC3C160043E0AB /* TwoFingerGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoFingerGesture.swift; sourceTree = "<group>"; };
-		148832481EFC3E520043E0AB /* ARSCNView+HitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSCNView+HitTests.swift"; sourceTree = "<group>"; };
+		148832481EFC3E520043E0AB /* ARSCNViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSCNViewExtensions.swift; sourceTree = "<group>"; };
 		2DBDCE14A952C4723A215388 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		3929C4881E89EC2C00E00B60 /* ARKitExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3929C48B1E89EC2C00E00B60 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		1488324A1EFC3E9C0043E0AB /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				148832481EFC3E520043E0AB /* ARSCNView+HitTests.swift */,
+				148832481EFC3E520043E0AB /* ARSCNViewExtensions.swift */,
 				C46356661EF9CC480080C8D9 /* SceneExtensions.swift */,
 				C41366B81EB80DD400EC054A /* TextManager.swift */,
 				39C0B9581E9C6B1F003FCA0C /* Utilities.swift */,
@@ -315,7 +315,7 @@
 				C8C12A711F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift in Sources */,
 				39C0B9591E9C6B1F003FCA0C /* SettingsViewController.swift in Sources */,
 				C46356671EF9CC500080C8D9 /* SceneExtensions.swift in Sources */,
-				148832491EFC3E520043E0AB /* ARSCNView+HitTests.swift in Sources */,
+				148832491EFC3E520043E0AB /* ARSCNViewExtensions.swift in Sources */,
 				148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */,
 				148832431EFC3BE00043E0AB /* SingleFingerGesture.swift in Sources */,
 				C42A71BD1E9C0AF200944367 /* FocusSquare.swift in Sources */,
