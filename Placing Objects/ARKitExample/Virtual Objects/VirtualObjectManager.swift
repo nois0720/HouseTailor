@@ -161,7 +161,7 @@ class VirtualObjectManager {
 	
 	func translate(_ object: VirtualObject, in sceneView: ARSCNView, basedOn screenPos: CGPoint, instantly: Bool) {
 		DispatchQueue.main.async {
-			let result = self.worldPositionFromScreenPosition(screenPos, in: sceneView, objectPos: object.simdPosition)
+			let result = self.worldPositionFromScreenPosition(screenPos, in: sceneView)
 			
 			guard let newPosition = result.position else {
 				self.delegate?.virtualObjectManager(self, couldNotPlace: object)
@@ -284,8 +284,7 @@ class VirtualObjectManager {
 	}
 	
 	func worldPositionFromScreenPosition(_ position: CGPoint,
-	                                     in sceneView: ARSCNView,
-	                                     objectPos: float3?) -> (position: float3?, planeAnchor: ARPlaneAnchor?, hitAPlane: Bool) {
+	                                     in sceneView: ARSCNView) -> (position: float3?, planeAnchor: ARPlaneAnchor?, hitAPlane: Bool) {
 		var planeHitTestResults = sceneView.hitTest(position, types: .existingPlaneUsingExtent)
 		if let result = planeHitTestResults.first {
 			
@@ -302,7 +301,7 @@ class VirtualObjectManager {
             let planeHitTestPosition = result.worldTransform.translation
             let planeAnchor = result.anchor
 
-            return (planeHitTestPosition, planeAnchor as? ARPlaneAnchor, true)
+            return (planeHitTestPosition, planeAnchor as? ARPlaneAnchor, false)
         }
         
         planeHitTestResults = sceneView.hitTest(position, types: .existingPlane)
@@ -328,6 +327,7 @@ protocol VirtualObjectManagerDelegate: class {
 	func virtualObjectManager(_ manager: VirtualObjectManager, didMoveObjectOntoNearbyPlane object: VirtualObject)
 	func virtualObjectManager(_ manager: VirtualObjectManager, couldNotPlace object: VirtualObject)
 }
+
 // Optional protocol methods
 extension VirtualObjectManagerDelegate {
     func virtualObjectManager(_ manager: VirtualObjectManager, transformDidChangeFor object: VirtualObject) {}

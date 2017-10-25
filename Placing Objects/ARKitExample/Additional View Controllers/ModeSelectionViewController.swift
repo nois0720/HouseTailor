@@ -55,8 +55,7 @@ class ModeSelectionViewController: UITableViewController {
             fatalError("Expected `ObjectCell` type for reuseIdentifier \(ModeCell.reuseIdentifier). Check the configuration in Main.storyboard.")
         }
         
-        let text = Mode.string(index: indexPath.row)
-        cell.modeNameLabel.text = text
+        cell.modeNameLabel.text = Mode.string(index: indexPath.row)
         return cell
     }
     

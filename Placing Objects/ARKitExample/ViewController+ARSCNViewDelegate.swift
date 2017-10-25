@@ -53,16 +53,16 @@ extension ViewController: ARSCNViewDelegate {
         
         // If light estimation is enabled, update the intensity of the model's lights and the environment map
         if let lightEstimate = session.currentFrame?.lightEstimate {
-            sceneView.scene.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40, queue: serialQueue)
+            sceneView.scene.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40)
         } else {
-            sceneView.scene.enableEnvironmentMapWithIntensity(40, queue: serialQueue)
+            sceneView.scene.enableEnvironmentMapWithIntensity(40)
         }
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
         
-        serialQueue.async {
+        updateQueue.async {
             self.addPlane(node: node, anchor: planeAnchor)
             self.virtualObjectManager.checkIfObjectShouldMoveOntoPlane(anchor: planeAnchor, planeAnchorNode: node)
         }
@@ -70,7 +70,7 @@ extension ViewController: ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        serialQueue.async {
+        updateQueue.async {
             self.updatePlane(anchor: planeAnchor)
             self.virtualObjectManager.checkIfObjectShouldMoveOntoPlane(anchor: planeAnchor, planeAnchorNode: node)
         }
@@ -78,7 +78,7 @@ extension ViewController: ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        serialQueue.async {
+        updateQueue.async {
             self.removePlane(anchor: planeAnchor)
         }
     }

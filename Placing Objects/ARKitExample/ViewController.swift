@@ -81,7 +81,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var pinSetterView: UIView!
     
     // MARK: - Queues
-	let serialQueue = DispatchQueue(label: "serialSceneKitQueue")
+	let updateQueue = DispatchQueue(label: "serialSceneKitQueue")
 	
     // MARK: - View Controller Life Cycle
     override func viewDidLoad() {
@@ -144,7 +144,7 @@ class ViewController: UIViewController {
     
 	func setupScene() {
         // Synchronize updates via the `serialQueue`.
-        virtualObjectManager = VirtualObjectManager(updateQueue: serialQueue)
+        virtualObjectManager = VirtualObjectManager(updateQueue: updateQueue)
         virtualObjectManager.delegate = self
 		
 		// set up scene view
@@ -156,7 +156,7 @@ class ViewController: UIViewController {
         // sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         // sceneView.showsStatistics = true
 		
-		sceneView.scene.enableEnvironmentMapWithIntensity(25, queue: serialQueue)
+		sceneView.scene.enableEnvironmentMapWithIntensity(25)
 		
 		setupFocusSquare()
 		
@@ -236,7 +236,7 @@ class ViewController: UIViewController {
     var focusSquare: FocusSquare?
 	
     func setupFocusSquare() {
-		serialQueue.async {
+		updateQueue.async {
 			self.focusSquare?.isHidden = true
 			self.focusSquare?.removeFromParentNode()
 			self.focusSquare = FocusSquare()
@@ -266,12 +266,11 @@ class ViewController: UIViewController {
 			
             let (worldPos, planeAnchor, _)
                 = self.virtualObjectManager.worldPositionFromScreenPosition(screenCenter,
-                                                                            in: self.sceneView,
-                                                                            objectPos: self.focusSquare?.simdPosition)
+                                                                            in: self.sceneView)
 			if let worldPos = worldPos {
-				self.serialQueue.async {
-					self.focusSquare?.update(for: worldPos, planeAnchor: planeAnchor, camera: self.session.currentFrame?.camera)
-				}
+                self.updateQueue.async {
+                    self.focusSquare?.update(for: worldPos, planeAnchor: planeAnchor, camera: self.session.currentFrame?.camera)
+                }
 				self.textManager.cancelScheduledMessage(forType: .focusSquare)
 			}
 		}
