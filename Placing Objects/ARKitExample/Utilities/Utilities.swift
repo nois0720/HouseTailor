@@ -2,7 +2,7 @@
 See LICENSE folder for this sample’s licensing information.
 
 Abstract:
-Utility functions and type extensions used throughout the projects.
+Utility functions and  stype extensions used throughout the projects.
 */
 
 import Foundation
@@ -238,6 +238,7 @@ extension SCNVector3 {
     func cross(_ vec: SCNVector3) -> SCNVector3 {
         return SCNVector3(self.y * vec.z - self.z * vec.y, self.z * vec.x - self.x * vec.z, self.x * vec.y - self.y * vec.x)
     }
+    
 }
 
 public let SCNVector3One: SCNVector3 = SCNVector3(1.0, 1.0, 1.0)
@@ -266,7 +267,17 @@ func lineSCNNode(from v1: SCNVector3, to v2: SCNVector3, color: UIColor = .black
     let indices: [Int32] = [0, 1]
     let source = SCNGeometrySource(vertices: [v1, v2])
     let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+    let geometry = SCNGeometry(sources: [source], elements: [element])
+    geometry.firstMaterial?.diffuse.contents = color
     
+    let node = SCNNode(geometry: geometry)
+    return node
+}
+
+func polygonSCNNode(from v1: SCNVector3, to v2: SCNVector3, color: UIColor = .black) -> SCNNode {
+    let indices: [Int32] = [0, 1]
+    let source = SCNGeometrySource(vertices: [v1, v2])
+    let element = SCNGeometryElement(indices: indices, primitiveType: .line)
     let geometry = SCNGeometry(sources: [source], elements: [element])
     geometry.firstMaterial?.diffuse.contents = color
     

@@ -47,7 +47,7 @@ class ModeSelectionViewController: UITableViewController {
     // MARK: - UITableViewDataSource
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -61,6 +61,8 @@ class ModeSelectionViewController: UITableViewController {
             text = "Furniture"
         case 1:
             text = "Measure"
+        case 2:
+            text = "Floor Plan"
         default:
             text = "nil"
         }

@@ -74,7 +74,8 @@ class TwoFingerGesture: Gesture {
             objectBaseScale = CGFloat(virtualObject.scale.x)
             
             allowRotation = true
-            allowScaling = UserDefaults.standard.bool(for: .scaleWithPinchGesture)
+            allowScaling = true
+                //UserDefaults.standard.bool(for: .scaleWithPinchGesture)
             
             initialDistanceBetweenFingers = (firstTouchPoint - secondTouchPoint).length()
             let sndPoint2fstPoint = firstTouchPoint - secondTouchPoint

@@ -52,7 +52,7 @@ class FocusSquare: SCNNode {
     
 	override init() {
 		super.init()
-		self.opacity = 0.0
+        self.opacity = 0.0
 		self.addChildNode(focusSquareNode)
 		open()
 	}

@@ -64,7 +64,7 @@ class SingleFingerGesture: Gesture {
         if translationThresholdPassed {
             
             let offsetPos = latestTouchLocation - dragOffset
-            objectManager.translate(virtualObject, in: sceneView, basedOn: offsetPos, instantly: false, infinitePlane: true)
+            objectManager.translate(virtualObject, in: sceneView, basedOn: offsetPos, instantly: false)
             hasMovedObject = true
         }
     }

@@ -12,6 +12,7 @@ import UIKit
 enum Mode {
     case furniture
     case measure
+    case floorPlan
 }
 
 class ViewController: UIViewController {
@@ -21,7 +22,6 @@ class ViewController: UIViewController {
     var screenCenter: CGPoint?
 
     let session = ARSession()
-    
     let standardConfiguration: ARWorldTrackingConfiguration = {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
@@ -36,9 +36,16 @@ class ViewController: UIViewController {
     var currentLine: Line?
     var isMeasuring: Bool = false
     
+    // MARK: AR Floor Plan Properties
+    
+    var FPStartNode: SCNNode?
+    var FPLines: [Line] = []
+    var FPCurrentLine: Line?
+    var isMeasuringFP: Bool = false
+    var isComplete: Bool = false
+    
     // MARK: - Virtual Object Manipulation Properties
     
-    var dragOnInfinitePlanesEnabled = false
     var virtualObjectManager: VirtualObjectManager!
     
     var isLoadingObject: Bool = false {
@@ -83,26 +90,25 @@ class ViewController: UIViewController {
 	let serialQueue = DispatchQueue(label: "serialSceneKitQueue")
 	
     // MARK: - View Controller Life Cycle
-    // 뷰컨트롤러의 라이프사이클에 따라서 처리한 것들. viewDidLoad전에 처리했을까.
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        Setting.registerDefaults()
+//        Setting.registerDefaults()
 		setupUIControls()
         setupScene()
-        
-        if let path = Bundle.main.path(forResource: "NodeTechnique", ofType: "plist") {
-            if let dict = NSDictionary(contentsOfFile: path)  {
-                let dict2 = dict as! [String: AnyObject]
-                let technique = SCNTechnique(dictionary:dict2)
-                sceneView.technique = technique
-            }
-        }
+        setupSCNTechnique()
     }
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
+        // MARK: reset FP properties
+        
+        FPLines = []
+        FPCurrentLine = nil
+        isMeasuringFP = false
+        isComplete = false
+        
 		// Prevent the screen from being dimmed after a while.
 		UIApplication.shared.isIdleTimerDisabled = true
 		
@@ -132,9 +138,14 @@ class ViewController: UIViewController {
         messagePanel.clipsToBounds = true
         messagePanel.isHidden = true
         messageLabel.text = ""
+        
+        // set pinSetterView. it is circle for setting pin
         pinSetterView.layer.cornerRadius = 3.0
         pinSetterView.clipsToBounds = true
         pinSetterView.isHidden = true
+        
+        // hide navi bar
+        self.navigationController?.isNavigationBarHidden = true
     }
     
 	func setupScene() {
@@ -146,8 +157,10 @@ class ViewController: UIViewController {
 		sceneView.setup()
 		sceneView.delegate = self
 		sceneView.session = session
-//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-        sceneView.showsStatistics = true
+        
+        /* debuging options */
+        // sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+        // sceneView.showsStatistics = true
 		
 		sceneView.scene.enableEnvironmentMapWithIntensity(25, queue: serialQueue)
 		
@@ -157,6 +170,17 @@ class ViewController: UIViewController {
 			self.screenCenter = self.sceneView.bounds.mid
 		}
 	}
+    
+    func setupSCNTechnique() {
+        guard let path = Bundle.main.path(forResource: "NodeTechnique", ofType: "plist"),
+            let dict = NSDictionary(contentsOfFile: path) else {
+            return
+        }
+        
+        let dict2 = dict as! [String: AnyObject]
+        let technique = SCNTechnique(dictionary:dict2)
+        sceneView.technique = technique
+    }
 	
     // MARK: - Gesture Recognizers
 	
@@ -181,8 +205,7 @@ class ViewController: UIViewController {
 	var planes = [ARPlaneAnchor: Plane]()
 	
     func addPlane(node: SCNNode, anchor: ARPlaneAnchor) {
-        
-		let plane = Plane(anchor)
+        let plane = Plane(anchor)
 		planes[anchor] = plane
         
 		node.addChildNode(plane)
@@ -233,23 +256,24 @@ class ViewController: UIViewController {
 		guard let screenCenter = screenCenter else { return }
 		
 		DispatchQueue.main.async {
-			var objectVisible = false
-			for object in self.virtualObjectManager.virtualObjects {
-				if self.sceneView.isNode(object, insideFrustumOf: self.sceneView.pointOfView!) {
-					objectVisible = true
-					break
-				}
-			}
+            var objectVisible = false
+            for object in self.virtualObjectManager.virtualObjects {
+                if self.sceneView.isNode(object, insideFrustumOf: self.sceneView.pointOfView!) {
+                    objectVisible = true
+                    break
+                }
+            }
+
+            if objectVisible {
+                self.focusSquare?.hide()
+            } else {
+                self.focusSquare?.unhide()
+            }
 			
-			if objectVisible {
-				self.focusSquare?.hide()
-			} else {
-				self.focusSquare?.unhide()
-			}
-			
-            let (worldPos, planeAnchor, _) = self.virtualObjectManager.worldPositionFromScreenPosition(screenCenter,
-                                                                                                       in: self.sceneView,
-                                                                                                       objectPos: self.focusSquare?.simdPosition)
+            let (worldPos, planeAnchor, _)
+                = self.virtualObjectManager.worldPositionFromScreenPosition(screenCenter,
+                                                                            in: self.sceneView,
+                                                                            objectPos: self.focusSquare?.simdPosition)
 			if let worldPos = worldPos {
 				self.serialQueue.async {
 					self.focusSquare?.update(for: worldPos, planeAnchor: planeAnchor, camera: self.session.currentFrame?.camera)
@@ -260,7 +284,7 @@ class ViewController: UIViewController {
 	}
     
 	// MARK: - Error handling
-	
+    
 	func displayErrorMessage(title: String, message: String, allowRestart: Bool = false) {
 		// Blur the background.
 		textManager.blurBackground()

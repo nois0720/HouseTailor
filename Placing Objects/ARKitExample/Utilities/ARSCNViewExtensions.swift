@@ -9,18 +9,19 @@ import ARKit
 
 extension ARSCNView {
     
-    // MARK: - Types
-    
-    struct HitTestRay {
-        let origin: float3
-        let direction: float3
+    func setup() {
+        automaticallyUpdatesLighting = false
+        
+        preferredFramesPerSecond = 60
+        contentScaleFactor = 2.0
+        
+        if let camera = pointOfView?.camera {
+            camera.automaticallyAdjustsZRange = true
+            camera.wantsHDR = true
+            camera.wantsExposureAdaptation = true
+            camera.exposureOffset = -1
+            camera.minimumExposure = -1
+            camera.maximumExposure = 3
+        }
     }
-    
-    struct FeatureHitTestResult {
-        let position: float3
-        let distanceToRayOrigin: Float
-        let featureHit: float3
-        let featureDistanceToHitResult: Float
-    }
-    
 }

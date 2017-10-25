@@ -8,27 +8,6 @@ Configures the scene.
 import Foundation
 import ARKit
 
-// MARK: - AR scene view extensions
-
-extension ARSCNView {
-	
-	func setup() {
-		automaticallyUpdatesLighting = false
-		
-		preferredFramesPerSecond = 60
-		contentScaleFactor = 2.0
-		
-		if let camera = pointOfView?.camera {
-            camera.automaticallyAdjustsZRange = true
-            camera.wantsHDR = true
-            camera.wantsExposureAdaptation = true
-            camera.exposureOffset = -1
-            camera.minimumExposure = -1
-            camera.maximumExposure = 3
-		}
-	}
-}
-
 // MARK: - Scene extensions
 
 extension SCNScene {

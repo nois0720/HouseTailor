@@ -33,6 +33,8 @@
 		C8C12A711F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */; };
 		E51C5B5B1F8F0C3400788324 /* NodeTechnique.plist in Resources */ = {isa = PBXBuildFile; fileRef = E51C5B591F8F0C3400788324 /* NodeTechnique.plist */; };
 		E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */ = {isa = PBXBuildFile; fileRef = E51C5B5A1F8F0C3400788324 /* NodeRender.metal */; };
+		E5311AD91FA0170800CC7F1A /* Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5311AD81FA0170800CC7F1A /* Polygon.swift */; };
+		E548CAC81FA019ED0057ED44 /* FloorPlanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */; };
 		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
 		E5A782C81F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */; };
 		E5A782CB1F971EE1003C87BB /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782CA1F971EE1003C87BB /* Line.swift */; };
@@ -70,6 +72,8 @@
 		C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ARSCNViewDelegate.swift"; sourceTree = "<group>"; };
 		E51C5B591F8F0C3400788324 /* NodeTechnique.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = NodeTechnique.plist; path = ARKitExample/NodeTechnique.plist; sourceTree = SOURCE_ROOT; };
 		E51C5B5A1F8F0C3400788324 /* NodeRender.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = NodeRender.metal; path = ARKitExample/NodeRender.metal; sourceTree = SOURCE_ROOT; };
+		E5311AD81FA0170800CC7F1A /* Polygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polygon.swift; sourceTree = "<group>"; };
+		E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorPlanViewController.swift; sourceTree = "<group>"; };
 		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
 		E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ModeSelectionViewController.swift"; sourceTree = "<group>"; };
 		E5A782CA1F971EE1003C87BB /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
@@ -92,7 +96,7 @@
 				392BB82B1EA19A7C00FBBAC8 /* Plane.swift */,
 				148832461EFC3C970043E0AB /* Gestures */,
 				148832471EFC3C9F0043E0AB /* Focus Squares */,
-				E5A782C91F971EBA003C87BB /* Lines */,
+				E5A782C91F971EBA003C87BB /* ARObjects */,
 			);
 			path = "UI Elements";
 			sourceTree = "<group>";
@@ -133,6 +137,7 @@
 				39C0B9571E9C6B1F003FCA0C /* SettingsViewController.swift */,
 				147062631F06FA790003EE03 /* VirtualObjectSelectionViewController.swift */,
 				E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */,
+				E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */,
 			);
 			path = "Additional View Controllers";
 			sourceTree = "<group>";
@@ -214,12 +219,13 @@
 			path = "Virtual Objects";
 			sourceTree = "<group>";
 		};
-		E5A782C91F971EBA003C87BB /* Lines */ = {
+		E5A782C91F971EBA003C87BB /* ARObjects */ = {
 			isa = PBXGroup;
 			children = (
 				E5A782CA1F971EE1003C87BB /* Line.swift */,
+				E5311AD81FA0170800CC7F1A /* Polygon.swift */,
 			);
-			path = Lines;
+			path = ARObjects;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -305,8 +311,10 @@
 				E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */,
 				3929C48E1E89EC2C00E00B60 /* ViewController.swift in Sources */,
 				E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */,
+				E548CAC81FA019ED0057ED44 /* FloorPlanViewController.swift in Sources */,
 				C41366B91EB80DD400EC054A /* TextManager.swift in Sources */,
 				39C0B95A1E9C6B1F003FCA0C /* Utilities.swift in Sources */,
+				E5311AD91FA0170800CC7F1A /* Polygon.swift in Sources */,
 				147062641F06FA790003EE03 /* VirtualObjectSelectionViewController.swift in Sources */,
 				392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */,
 				148832451EFC3C160043E0AB /* TwoFingerGesture.swift in Sources */,
@@ -441,14 +449,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3C2F880B9F1F567D5404F826 /* SampleCode.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XMGUU4BFJG;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitExample/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nois.arkit-example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nois.house-tailor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -460,14 +467,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3C2F880B9F1F567D5404F826 /* SampleCode.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XMGUU4BFJG;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitExample/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nois.arkit-example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nois.house-tailor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;

@@ -12,9 +12,9 @@ import ReplayKit
 extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewViewControllerDelegate {
     
     enum SegueIdentifier: String {
-        case showSettings
         case showObjects
         case showModes
+        case showFloorPlan
     }
     
     // MARK: - Interface Actions
@@ -29,22 +29,75 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         }
     }
     
+    // (+) 버튼
     @IBAction func chooseObject(_ button: UIButton) {
         // Abort if we are about to load another object to avoid concurrent modifications of the scene.
         if isLoadingObject { return }
         
-        if mode == .furniture {
+        switch mode {
+        case .furniture:
             textManager.cancelScheduledMessage(forType: .contentPlacement)
             performSegue(withIdentifier: SegueIdentifier.showObjects.rawValue, sender: button)
-        } else {
-            createPin()
+        case .measure:
+            if isMeasuring { stopMeasuring() }
+            else { startMeasuring() }
+        case .floorPlan:
+            if isComplete { stopMeasuringFP() }
+            else if isMeasuringFP { continueMeasuringFP() }
+            else { startMeasuringFP() }
         }
     }
 
+    // 모드 선택
     @IBAction func chooseMode(_ button: UIButton) {
         textManager.cancelScheduledMessage(forType: .contentPlacement)
         performSegue(withIdentifier: SegueIdentifier.showModes.rawValue, sender: button)
     }
+    
+    /// - Tag: restartExperience
+    @IBAction func restartExperience(_ sender: Any) {
+        guard restartExperienceButtonIsEnabled, !isLoadingObject else { return }
+        lines.forEach { $0.delete() }
+        lines.removeAll()
+        
+        DispatchQueue.main.async {
+            self.restartExperienceButtonIsEnabled = false
+            
+            self.textManager.cancelAllScheduledMessages()
+            self.textManager.dismissPresentedAlert()
+            self.textManager.showMessage("STARTING A NEW SESSION")
+            
+            self.virtualObjectManager.removeAllVirtualObjects()
+            self.addObjectButton.setImage(#imageLiteral(resourceName: "add"), for: [])
+            self.addObjectButton.setImage(#imageLiteral(resourceName: "addPressed"), for: [.highlighted])
+            self.focusSquare?.isHidden = true
+            
+            self.resetTracking()
+            
+            self.restartExperienceButton.setImage(#imageLiteral(resourceName: "restart"), for: [])
+            
+            // Show the focus square after a short delay to ensure all plane anchors have been deleted.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                self.setupFocusSquare()
+            })
+            
+            // Disable Restart button for a while in order to give the session enough time to restart.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+                self.restartExperienceButtonIsEnabled = true
+            })
+        }
+    }
+    
+    @IBAction func deleteObject(_ sender: Any) {
+        guard let lastUsedObject = virtualObjectManager.lastUsedObject else {
+            return
+        }
+        
+        virtualObjectManager.removeVirtualObject(at: lastUsedObject)
+    }
+    
+    // MARK: - private functions
+
     
     private func stopRecordAction(recorder: RPScreenRecorder) {
         recorder.stopRecording(handler: { (previewController, error) in
@@ -91,64 +144,71 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         }
     }
     
-    private func createPin() {
-        if isMeasuring {
-            // @IBAction
-            // ViewController's lines(Array)에 line 추가
-            isMeasuring = false
-            
-            if let currentLine = currentLine {
-                lines.append(currentLine)
-                self.currentLine = nil
-            }
-        } else {
-            let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
-            if let result = planeHitTestResults.first {
-                let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
-                currentLine = Line(sceneView: sceneView, startNodePos: hitPosition)
-                isMeasuring = true
-            }
+    private func startMeasuring() {
+        let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
+        
+        guard let result = planeHitTestResults.first else { return }
+        
+        let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+        currentLine = Line(sceneView: sceneView, startNodePos: hitPosition)
+        isMeasuring = true
+    }
+    
+    private func stopMeasuring() {
+        isMeasuring = false
+        
+        if let currentLine = currentLine {
+            lines.append(currentLine)
+            self.currentLine = nil
         }
     }
     
-    /// - Tag: restartExperience
-    @IBAction func restartExperience(_ sender: Any) {
-        guard restartExperienceButtonIsEnabled, !isLoadingObject else { return }
+    private func startMeasuringFP() {
+        let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
         
-        DispatchQueue.main.async {
-            self.restartExperienceButtonIsEnabled = false
-            
-            self.textManager.cancelAllScheduledMessages()
-            self.textManager.dismissPresentedAlert()
-            self.textManager.showMessage("STARTING A NEW SESSION")
-            
-            self.virtualObjectManager.removeAllVirtualObjects()
-            self.addObjectButton.setImage(#imageLiteral(resourceName: "add"), for: [])
-            self.addObjectButton.setImage(#imageLiteral(resourceName: "addPressed"), for: [.highlighted])
-            self.focusSquare?.isHidden = true
-            
-            self.resetTracking()
-            
-            self.restartExperienceButton.setImage(#imageLiteral(resourceName: "restart"), for: [])
-            
-            // Show the focus square after a short delay to ensure all plane anchors have been deleted.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                self.setupFocusSquare()
-            })
-            
-            // Disable Restart button for a while in order to give the session enough time to restart.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-                self.restartExperienceButtonIsEnabled = true
-            })
+        guard let result = planeHitTestResults.first else { return }
+        
+        let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+        isMeasuringFP = true
+        FPCurrentLine = Line(sceneView: sceneView, startNodePos: hitPosition)
+    }
+    
+    private func continueMeasuringFP() {
+        if let FPCurrentLine = FPCurrentLine {
+            FPLines.append(FPCurrentLine)
+            self.FPCurrentLine = Line(sceneView: sceneView, startNodePos: FPCurrentLine.endNodePos())
         }
     }
     
-    @IBAction func deleteObject(_ sender: Any) {
-        guard let lastUsedObject = virtualObjectManager.lastUsedObject else {
-            return
+    private func stopMeasuringFP() {
+        isMeasuringFP = false
+        isComplete = false
+        
+        if let FPCurrentLine = FPCurrentLine {
+            FPLines.append(FPCurrentLine)
+            self.FPCurrentLine = nil
         }
         
-        virtualObjectManager.removeVirtualObject(at: lastUsedObject)
+        let alertController = UIAlertController(title: "평면도",
+                                                message: "측정한 평면도를 사용하시겠습니까?",
+                                                preferredStyle: .alert)
+        let discardAction = UIAlertAction(title: "삭제",
+                                          style: .destructive) { [unowned self] (action) in
+                                            self.FPLines.forEach { $0.delete() }
+                                            self.FPLines = []
+        }
+        
+        let viewAction = UIAlertAction(title: "보기",
+                                       style: .default,
+                                       handler: { [unowned self] (action) in
+                                        self.FPLines.forEach { $0.delete() }
+                                        self.performSegue(withIdentifier: SegueIdentifier.showFloorPlan.rawValue, sender: nil)
+        })
+        
+        alertController.addAction(discardAction)
+        alertController.addAction(viewAction)
+        
+        self.present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - UIPopoverPresentationControllerDelegate
@@ -158,6 +218,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     }
     
     // MARK: - RPPreviewViewControllerDelegate
+    
     func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
         previewController.dismiss(animated: true, completion: nil)
     }
@@ -182,6 +243,9 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         }
         if segueIdentifer == .showModes, let modeSelectionViewController = segue.destination as? ModeSelectionViewController {
             modeSelectionViewController.delegate = self
+        }
+        if segueIdentifer == .showFloorPlan, let floorPlanViewController = segue.destination as? FloorPlanViewController {
+            floorPlanViewController.polygon = Polygon(lines: FPLines)
         }
     }
 }

@@ -13,13 +13,41 @@ extension ViewController: ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         updateFocusSquare()
         
-        // Update current line
         if isMeasuring {
             let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
-            if let result = planeHitTestResults.first {
-                let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
-                
-                self.currentLine?.update(to: hitPosition)
+            guard let result = planeHitTestResults.first else { return }
+            
+            let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+            self.currentLine?.update(to: hitPosition)
+        }
+        
+        if isMeasuringFP {
+            let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
+            guard let result = planeHitTestResults.first,
+                let FPCurrentLine = FPCurrentLine else { return }
+            
+            let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+            FPCurrentLine.update(to: hitPosition)
+            
+            for i in FPLines.indices.dropLast() {
+                if FPCurrentLine.isIntersect(other: FPLines[i]) {
+                    print("intersect with \(i+1)번째 라인")
+                    FPCurrentLine.setCategory(number: 1)
+                    textManager.showMessage("다른 선과 겹칩니다.", autoHide: true)
+                    break
+                } else {
+                    FPCurrentLine.setCategory(number: 2)
+                }
+            }
+            
+            if FPLines.count > 1, let firstNodeStartPos = FPLines.first?.startNodePos() {
+                if distance(startPos: hitPosition, endPos: firstNodeStartPos) < 0.04 {
+                    FPCurrentLine.update(to: firstNodeStartPos)
+                    isComplete = true
+                }
+                else {
+                    isComplete = false
+                }
             }
         }
         
@@ -33,8 +61,6 @@ extension ViewController: ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        
-        print("plane Detection!")
         
         serialQueue.async {
             self.addPlane(node: node, anchor: planeAnchor)

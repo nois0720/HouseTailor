@@ -14,12 +14,10 @@ class ObjectCell: UITableViewCell {
     static let reuseIdentifier = "ObjectCell"
     
     @IBOutlet weak var objectTitleLabel: UILabel!
-    @IBOutlet weak var objectImageView: UIImageView!
         
     var object: VirtualObjectDefinition? {
         didSet {
             objectTitleLabel.text = object?.displayName
-//            objectImageView.image = object?.thumbImage
         }
     }
 }
