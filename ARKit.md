@@ -1,7 +1,3 @@
-# Tracking
-* Black wall이나 너무 어두운 경우, Tracking Quality가 줄어듦.
-* ARCamera 클래스는 tracking state reason information을 제공 -> low quality tracking situation들을 해결
-
 # ARSCNView
 3D SceneKit 컨텐츠로 카메라 뷰를 통해 AR 경험을 표시하는 뷰.
 
@@ -66,3 +62,7 @@ ARSession의 실행은 디바이스의 카메라로부터 지속적으로 비디
 
 # ARFrame - rawFeaturePoints: ARPointCloud
 카메라 이미지에서 주목할만한 피쳐를 나타낸다. 이러한 feature point의 위치는 3D 월드 좌표 공간에서 ARKit이 디바이스의 위치, 방향, 움직임 들을 정확하게 추적하기 위해 수행하는 이미지 분석의 일부이다.
+
+# Tracking
+* Black wall이나 너무 어두운 경우, Tracking Quality가 줄어듦.
+* ARCamera 클래스는 tracking state reason information을 제공 -> low quality tracking situation들을 해결
