@@ -34,7 +34,9 @@
 		E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */ = {isa = PBXBuildFile; fileRef = E51C5B5A1F8F0C3400788324 /* NodeRender.metal */; };
 		E5311AD91FA0170800CC7F1A /* Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5311AD81FA0170800CC7F1A /* Polygon.swift */; };
 		E548CAC81FA019ED0057ED44 /* FloorPlanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */; };
+		E580F1AA1FA06ADA00A69AC7 /* FPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E580F1A91FA06ADA00A69AC7 /* FPUtils.swift */; };
 		E5A7764A1FA046F5008DD45A /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A776491FA046F5008DD45A /* Mode.swift */; };
+		E5A7764C1FA05D18008DD45A /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A7764B1FA05D18008DD45A /* GridView.swift */; };
 		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
 		E5A782C81F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */; };
 		E5A782CB1F971EE1003C87BB /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782CA1F971EE1003C87BB /* Line.swift */; };
@@ -73,7 +75,9 @@
 		E51C5B5A1F8F0C3400788324 /* NodeRender.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = NodeRender.metal; path = ARKitExample/NodeRender.metal; sourceTree = SOURCE_ROOT; };
 		E5311AD81FA0170800CC7F1A /* Polygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polygon.swift; sourceTree = "<group>"; };
 		E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorPlanViewController.swift; sourceTree = "<group>"; };
+		E580F1A91FA06ADA00A69AC7 /* FPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FPUtils.swift; sourceTree = "<group>"; };
 		E5A776491FA046F5008DD45A /* Mode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
+		E5A7764B1FA05D18008DD45A /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
 		E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ModeSelectionViewController.swift"; sourceTree = "<group>"; };
 		E5A782CA1F971EE1003C87BB /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
@@ -93,7 +97,7 @@
 		113B64D01ECA81CA0071CBD1 /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
-				392BB82B1EA19A7C00FBBAC8 /* Plane.swift */,
+				E580F1A81FA06A2300A69AC7 /* Views */,
 				148832461EFC3C970043E0AB /* Gestures */,
 				148832471EFC3C9F0043E0AB /* Focus Squares */,
 				E5A782C91F971EBA003C87BB /* ARObjects */,
@@ -128,6 +132,7 @@
 				C41366B81EB80DD400EC054A /* TextManager.swift */,
 				39C0B9581E9C6B1F003FCA0C /* Utilities.swift */,
 				E5A776491FA046F5008DD45A /* Mode.swift */,
+				E580F1A91FA06ADA00A69AC7 /* FPUtils.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -219,9 +224,18 @@
 			path = "Virtual Objects";
 			sourceTree = "<group>";
 		};
+		E580F1A81FA06A2300A69AC7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E5A7764B1FA05D18008DD45A /* GridView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		E5A782C91F971EBA003C87BB /* ARObjects */ = {
 			isa = PBXGroup;
 			children = (
+				392BB82B1EA19A7C00FBBAC8 /* Plane.swift */,
 				E5A782CA1F971EE1003C87BB /* Line.swift */,
 				E5311AD81FA0170800CC7F1A /* Polygon.swift */,
 			);
@@ -321,7 +335,9 @@
 				148832451EFC3C160043E0AB /* TwoFingerGesture.swift in Sources */,
 				3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */,
 				C4E87DD91EA6B40F002117D6 /* VirtualObject.swift in Sources */,
+				E5A7764C1FA05D18008DD45A /* GridView.swift in Sources */,
 				C8C12A711F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift in Sources */,
+				E580F1AA1FA06ADA00A69AC7 /* FPUtils.swift in Sources */,
 				C46356671EF9CC500080C8D9 /* SceneExtensions.swift in Sources */,
 				148832491EFC3E520043E0AB /* ARSCNViewExtensions.swift in Sources */,
 				148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */,

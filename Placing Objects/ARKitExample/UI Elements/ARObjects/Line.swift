@@ -124,18 +124,6 @@ class Line {
         lineNode?.categoryBitMask = number
     }
     
-    func toCGPoint() -> CGPoint {
-        let screen = UIScreen.main.bounds
-        let screenWidth = screen.width / 2
-        let screenHeight = screen.height / 2
-        
-        let x = CGFloat(self.startNodePos().x * 100.0) + screenWidth
-        let y = CGFloat(self.startNodePos().z * 100.0) + screenHeight
-        
-        return CGPoint(x: x, y: y)
-    }
-    
-    
     private func removeFromParentNode() {
         startNode.removeFromParentNode()
         lineNode?.removeFromParentNode()

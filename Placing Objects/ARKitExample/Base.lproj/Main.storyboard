@@ -358,6 +358,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XQR-zZ-UUY">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="432-K7-l9s">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                                        <color key="backgroundColor" white="0.80000000000000004" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="432-K7-l9s" firstAttribute="top" secondItem="XQR-zZ-UUY" secondAttribute="top" id="04O-9x-FE3"/>
+                                    <constraint firstItem="432-K7-l9s" firstAttribute="leading" secondItem="XQR-zZ-UUY" secondAttribute="leading" id="1AI-Dn-5Jk"/>
+                                    <constraint firstAttribute="bottom" secondItem="432-K7-l9s" secondAttribute="bottom" id="Irj-zL-4B1"/>
+                                    <constraint firstItem="432-K7-l9s" firstAttribute="height" secondItem="XQR-zZ-UUY" secondAttribute="height" id="LD2-RH-HmU"/>
+                                    <constraint firstItem="432-K7-l9s" firstAttribute="width" secondItem="XQR-zZ-UUY" secondAttribute="width" id="lvn-v2-RMd"/>
+                                    <constraint firstAttribute="trailing" secondItem="432-K7-l9s" secondAttribute="trailing" id="mtW-it-m57"/>
+                                </constraints>
+                            </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xi9-If-RI6" userLabel="Choose Mode Button">
                                 <rect key="frame" x="329" y="80" width="30" height="30"/>
                                 <constraints>
@@ -368,25 +385,26 @@
                                 <state key="normal" image="button:xi9-If-RI6:image">
                                     <color key="titleColor" red="0.85882352939999995" green="0.72941176470000002" blue="0.22352941179999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
-                                <state key="highlighted" image="20107B6B-A5A3-403C-A915-9DC2F4F90EA3"/>
+                                <state key="highlighted" image="C7B54783-8A85-44D3-90E6-DF35D1444E28"/>
                                 <connections>
                                     <action selector="backToMain:" destination="hdp-pk-LvL" eventType="touchUpInside" id="kb6-kN-kn7"/>
                                 </connections>
                             </button>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XQR-zZ-UUY">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </scrollView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="XQR-zZ-UUY" firstAttribute="top" secondItem="2gS-VU-cFb" secondAttribute="top" id="Mnj-Oj-xYZ"/>
                             <constraint firstItem="2gS-VU-cFb" firstAttribute="trailing" secondItem="xi9-If-RI6" secondAttribute="trailing" constant="16" id="Pl1-Vf-0QU"/>
                             <constraint firstItem="xi9-If-RI6" firstAttribute="top" secondItem="2gS-VU-cFb" secondAttribute="top" constant="16" id="TqQ-bu-jHU"/>
+                            <constraint firstItem="XQR-zZ-UUY" firstAttribute="leading" secondItem="2gS-VU-cFb" secondAttribute="leading" id="phE-63-RnW"/>
+                            <constraint firstItem="XQR-zZ-UUY" firstAttribute="trailing" secondItem="2gS-VU-cFb" secondAttribute="trailing" id="s71-nP-xg6"/>
+                            <constraint firstItem="XQR-zZ-UUY" firstAttribute="bottom" secondItem="2gS-VU-cFb" secondAttribute="bottom" id="ubc-ZV-Tdy"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2gS-VU-cFb"/>
                     </view>
                     <navigationItem key="navigationItem" id="seG-FU-Fg5"/>
                     <connections>
+                        <outlet property="floorPlaneView" destination="432-K7-l9s" id="Og0-RV-rQf"/>
                         <outlet property="scrollView" destination="XQR-zZ-UUY" id="bzt-ai-Hn9"/>
                     </connections>
                 </viewController>
@@ -473,7 +491,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="20107B6B-A5A3-403C-A915-9DC2F4F90EA3" width="64" height="64">
+        <image name="C7B54783-8A85-44D3-90E6-DF35D1444E28" width="64" height="64">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGVVZYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK8QEgcI
 ExQZHh8jJCsuMTtDR0tPUlUkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdz
