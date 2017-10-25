@@ -9,12 +9,6 @@ import ARKit
 import SceneKit
 import UIKit
 
-enum Mode {
-    case furniture
-    case measure
-    case floorPlan
-}
-
 class ViewController: UIViewController {
     
     // MARK: - ARKit Config Properties

@@ -22,7 +22,6 @@
 		3929C49F1E89EE4400E00B60 /* Models.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 3929C49E1E89EE4400E00B60 /* Models.scnassets */; };
 		392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392BB82B1EA19A7C00FBBAC8 /* Plane.swift */; };
 		3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3987BEDB1E9E057F00167FAC /* Gesture.swift */; };
-		39C0B9591E9C6B1F003FCA0C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C0B9571E9C6B1F003FCA0C /* SettingsViewController.swift */; };
 		39C0B95A1E9C6B1F003FCA0C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C0B9581E9C6B1F003FCA0C /* Utilities.swift */; };
 		39D8DC1B1E8ADAE600386B05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */; };
 		C41366B91EB80DD400EC054A /* TextManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41366B81EB80DD400EC054A /* TextManager.swift */; };
@@ -35,6 +34,7 @@
 		E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */ = {isa = PBXBuildFile; fileRef = E51C5B5A1F8F0C3400788324 /* NodeRender.metal */; };
 		E5311AD91FA0170800CC7F1A /* Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5311AD81FA0170800CC7F1A /* Polygon.swift */; };
 		E548CAC81FA019ED0057ED44 /* FloorPlanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */; };
+		E5A7764A1FA046F5008DD45A /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A776491FA046F5008DD45A /* Mode.swift */; };
 		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
 		E5A782C81F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */; };
 		E5A782CB1F971EE1003C87BB /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782CA1F971EE1003C87BB /* Line.swift */; };
@@ -60,7 +60,6 @@
 		3929C49E1E89EE4400E00B60 /* Models.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = Models.scnassets; sourceTree = "<group>"; };
 		392BB82B1EA19A7C00FBBAC8 /* Plane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
 		3987BEDB1E9E057F00167FAC /* Gesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gesture.swift; sourceTree = "<group>"; };
-		39C0B9571E9C6B1F003FCA0C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		39C0B9581E9C6B1F003FCA0C /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3C2F880B9F1F567D5404F826 /* SampleCode.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
@@ -74,6 +73,7 @@
 		E51C5B5A1F8F0C3400788324 /* NodeRender.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = NodeRender.metal; path = ARKitExample/NodeRender.metal; sourceTree = SOURCE_ROOT; };
 		E5311AD81FA0170800CC7F1A /* Polygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polygon.swift; sourceTree = "<group>"; };
 		E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorPlanViewController.swift; sourceTree = "<group>"; };
+		E5A776491FA046F5008DD45A /* Mode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
 		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
 		E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ModeSelectionViewController.swift"; sourceTree = "<group>"; };
 		E5A782CA1F971EE1003C87BB /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
@@ -127,6 +127,7 @@
 				C46356661EF9CC480080C8D9 /* SceneExtensions.swift */,
 				C41366B81EB80DD400EC054A /* TextManager.swift */,
 				39C0B9581E9C6B1F003FCA0C /* Utilities.swift */,
+				E5A776491FA046F5008DD45A /* Mode.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -134,7 +135,6 @@
 		1488324B1EFC3EBF0043E0AB /* Additional View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				39C0B9571E9C6B1F003FCA0C /* SettingsViewController.swift */,
 				147062631F06FA790003EE03 /* VirtualObjectSelectionViewController.swift */,
 				E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */,
 				E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */,
@@ -311,6 +311,7 @@
 				E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */,
 				3929C48E1E89EC2C00E00B60 /* ViewController.swift in Sources */,
 				E51C5B5C1F8F0C3400788324 /* NodeRender.metal in Sources */,
+				E5A7764A1FA046F5008DD45A /* Mode.swift in Sources */,
 				E548CAC81FA019ED0057ED44 /* FloorPlanViewController.swift in Sources */,
 				C41366B91EB80DD400EC054A /* TextManager.swift in Sources */,
 				39C0B95A1E9C6B1F003FCA0C /* Utilities.swift in Sources */,
@@ -321,7 +322,6 @@
 				3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */,
 				C4E87DD91EA6B40F002117D6 /* VirtualObject.swift in Sources */,
 				C8C12A711F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift in Sources */,
-				39C0B9591E9C6B1F003FCA0C /* SettingsViewController.swift in Sources */,
 				C46356671EF9CC500080C8D9 /* SceneExtensions.swift in Sources */,
 				148832491EFC3E520043E0AB /* ARSCNViewExtensions.swift in Sources */,
 				148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */,

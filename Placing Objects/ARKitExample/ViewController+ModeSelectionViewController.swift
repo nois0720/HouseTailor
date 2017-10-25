@@ -13,20 +13,12 @@ extension ViewController: ModeSelectionViewControllerDelegate {
     
     // MARK: - VirtualObjectManager delegate callbacks
     func modeSelectionViewController(_: ModeSelectionViewController, didSelectModeAt index: Int) {
-        switch index {
-        case 0:
-            print("furniture mode")
-            mode = .furniture
+        
+        mode = Mode.getMode(at: index)
+        
+        if mode == .furniture {
             lines.forEach { $0.delete() }
             lines.removeAll()
-        case 1:
-            print("measure mode")
-            mode = .measure
-        case 2:
-            print("floorPlan mode")
-            mode = .floorPlan
-        default:
-            print("error")
         }
     }
     
