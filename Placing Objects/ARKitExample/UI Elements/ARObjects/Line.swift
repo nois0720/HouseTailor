@@ -60,8 +60,39 @@ class Line {
         
         lenTextNode = SCNNode()
         lenTextNode.addChildNode(textWrapperNode)
-        lenTextNode.constraints = [constraint, replicatorConstraint]
+        lenTextNode.constraints = [constraint]
         sceneView.scene.rootNode.addChildNode(lenTextNode)
+    }
+    
+    init(startNodePos: SCNVector3, endNodePos: SCNVector3) {
+        let sphere = SCNSphere(radius: 0.5)
+        sphere.firstMaterial?.diffuse.contents = nodeColor
+        sphere.firstMaterial?.lightingModel = .constant
+        
+        startNode = SCNNode(geometry: sphere)
+        startNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
+        startNode.position = startNodePos
+        
+        endNode = SCNNode(geometry: sphere)
+        endNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
+        endNode.position = endNodePos
+        // length text. unit: meter
+        lenText = SCNText(string: "2m", extrusionDepth: textDepth)
+        lenText.font = .systemFont(ofSize: 4)
+        lenText.firstMaterial?.diffuse.contents = textColor
+        lenText.alignmentMode = kCAAlignmentJustified
+        
+        // Documentation에 따르면, SCNLookAtConstraint를 사용하면, constraint가 적용된 노드의
+        // negative z-axis가 constraint의 타겟 노드를 바라보도록 업데이트 됨.
+        // 따라서, 업데이트의 영향을 받지 않는 하위 WrapperNode를 만들어 해당 노드의 yaw를 pi만큼 돌려주고
+        // 이를 상위 노드에 추가.
+        let textWrapperNode = SCNNode(geometry: lenText)
+        textWrapperNode.eulerAngles = SCNVector3Make(0, .pi, 0)
+        textWrapperNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
+        
+        lenTextNode = SCNNode()
+        lenTextNode.addChildNode(textWrapperNode)
+        sceneView = nil
     }
     
     func update(to vector: SCNVector3) {
@@ -92,8 +123,16 @@ class Line {
         return startNode.position
     }
     
+    func startNodeWorldPos() -> SCNVector3 {
+        return startNode.worldPosition
+    }
+    
     func endNodePos() -> SCNVector3 {
         return endNode.position
+    }
+    
+    func endNodeWorldPos() -> SCNVector3 {
+        return endNode.worldPosition
     }
     
     func isIntersect(other: Line) -> Bool {
@@ -110,8 +149,6 @@ class Line {
         let t: Double = _t / divider
         let s: Double = _s / divider
         
-//        print("t: \(t)")
-//        print("s: \(s)")
         if t == 1.0 && s == 0.0 { return false }
         
         if t < 0.0 || t > 1.0 || s < 0.0 || s > 1.0 { return false }

@@ -35,6 +35,9 @@
 		E5311AD91FA0170800CC7F1A /* Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5311AD81FA0170800CC7F1A /* Polygon.swift */; };
 		E548CAC81FA019ED0057ED44 /* FloorPlanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */; };
 		E580F1AA1FA06ADA00A69AC7 /* FPUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E580F1A91FA06ADA00A69AC7 /* FPUtils.swift */; };
+		E580F1AE1FA2185700A69AC7 /* VirtualObjectFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = E580F1AD1FA2185700A69AC7 /* VirtualObjectFrame.swift */; };
+		E580F1B01FA21BE300A69AC7 /* VirtualObjectFrameSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E580F1AF1FA21BE300A69AC7 /* VirtualObjectFrameSegment.swift */; };
+		E583FFA81FA6EA2F00067667 /* Codable+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E583FFA71FA6EA2F00067667 /* Codable+Extension.swift */; };
 		E5A7764A1FA046F5008DD45A /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A776491FA046F5008DD45A /* Mode.swift */; };
 		E5A7764C1FA05D18008DD45A /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A7764B1FA05D18008DD45A /* GridView.swift */; };
 		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
@@ -76,6 +79,9 @@
 		E5311AD81FA0170800CC7F1A /* Polygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polygon.swift; sourceTree = "<group>"; };
 		E548CAC71FA019ED0057ED44 /* FloorPlanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorPlanViewController.swift; sourceTree = "<group>"; };
 		E580F1A91FA06ADA00A69AC7 /* FPUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FPUtils.swift; sourceTree = "<group>"; };
+		E580F1AD1FA2185700A69AC7 /* VirtualObjectFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectFrame.swift; sourceTree = "<group>"; };
+		E580F1AF1FA21BE300A69AC7 /* VirtualObjectFrameSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectFrameSegment.swift; sourceTree = "<group>"; };
+		E583FFA71FA6EA2F00067667 /* Codable+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codable+Extension.swift"; sourceTree = "<group>"; };
 		E5A776491FA046F5008DD45A /* Mode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
 		E5A7764B1FA05D18008DD45A /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
@@ -97,6 +103,7 @@
 		113B64D01ECA81CA0071CBD1 /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
+				E51D27B11FA5FA90003AB667 /* FPObjects */,
 				E580F1A81FA06A2300A69AC7 /* Views */,
 				148832461EFC3C970043E0AB /* Gestures */,
 				148832471EFC3C9F0043E0AB /* Focus Squares */,
@@ -133,6 +140,7 @@
 				39C0B9581E9C6B1F003FCA0C /* Utilities.swift */,
 				E5A776491FA046F5008DD45A /* Mode.swift */,
 				E580F1A91FA06ADA00A69AC7 /* FPUtils.swift */,
+				E583FFA71FA6EA2F00067667 /* Codable+Extension.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -219,9 +227,19 @@
 			children = (
 				C4E87DD81EA6B40F002117D6 /* VirtualObject.swift */,
 				C46356651EF9CB1A0080C8D9 /* VirtualObjectManager.swift */,
+				E580F1AD1FA2185700A69AC7 /* VirtualObjectFrame.swift */,
+				E580F1AF1FA21BE300A69AC7 /* VirtualObjectFrameSegment.swift */,
 				1137ED1E1F09BE0800F1A96E /* VirtualObjects.json */,
 			);
 			path = "Virtual Objects";
+			sourceTree = "<group>";
+		};
+		E51D27B11FA5FA90003AB667 /* FPObjects */ = {
+			isa = PBXGroup;
+			children = (
+				E5311AD81FA0170800CC7F1A /* Polygon.swift */,
+			);
+			path = FPObjects;
 			sourceTree = "<group>";
 		};
 		E580F1A81FA06A2300A69AC7 /* Views */ = {
@@ -237,7 +255,6 @@
 			children = (
 				392BB82B1EA19A7C00FBBAC8 /* Plane.swift */,
 				E5A782CA1F971EE1003C87BB /* Line.swift */,
-				E5311AD81FA0170800CC7F1A /* Polygon.swift */,
 			);
 			path = ARObjects;
 			sourceTree = "<group>";
@@ -277,6 +294,11 @@
 						DevelopmentTeam = XMGUU4BFJG;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -330,11 +352,13 @@
 				C41366B91EB80DD400EC054A /* TextManager.swift in Sources */,
 				39C0B95A1E9C6B1F003FCA0C /* Utilities.swift in Sources */,
 				E5311AD91FA0170800CC7F1A /* Polygon.swift in Sources */,
+				E580F1B01FA21BE300A69AC7 /* VirtualObjectFrameSegment.swift in Sources */,
 				147062641F06FA790003EE03 /* VirtualObjectSelectionViewController.swift in Sources */,
 				392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */,
 				148832451EFC3C160043E0AB /* TwoFingerGesture.swift in Sources */,
 				3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */,
 				C4E87DD91EA6B40F002117D6 /* VirtualObject.swift in Sources */,
+				E580F1AE1FA2185700A69AC7 /* VirtualObjectFrame.swift in Sources */,
 				E5A7764C1FA05D18008DD45A /* GridView.swift in Sources */,
 				C8C12A711F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift in Sources */,
 				E580F1AA1FA06ADA00A69AC7 /* FPUtils.swift in Sources */,
@@ -342,6 +366,7 @@
 				148832491EFC3E520043E0AB /* ARSCNViewExtensions.swift in Sources */,
 				148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */,
 				148832431EFC3BE00043E0AB /* SingleFingerGesture.swift in Sources */,
+				E583FFA81FA6EA2F00067667 /* Codable+Extension.swift in Sources */,
 				C42A71BD1E9C0AF200944367 /* FocusSquare.swift in Sources */,
 				E5A782CB1F971EE1003C87BB /* Line.swift in Sources */,
 				3929C48C1E89EC2C00E00B60 /* AppDelegate.swift in Sources */,

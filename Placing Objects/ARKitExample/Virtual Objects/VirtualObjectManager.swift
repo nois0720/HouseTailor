@@ -101,6 +101,12 @@ class VirtualObjectManager {
             self.updateQueue.async {
                 self.setNewVirtualObjectPosition(object, to: position, cameraTransform: cameraTransform)
                 self.delegate?.virtualObjectManager(self, didLoad: object)
+                
+                guard let frame = VirtualObjectFrame(virtualObject: object) else {
+                    return
+                }
+                
+                object.setFrame(frame: frame)
             }
         }
 	}

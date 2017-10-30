@@ -224,8 +224,9 @@ class ViewController: UIViewController {
     }
 	
 	func resetTracking() {
+//        session.run(standardConfiguration, options: [])
 		session.run(standardConfiguration, options: [.resetTracking, .removeExistingAnchors])
-		
+        
 		textManager.scheduleMessage("FIND A SURFACE TO PLACE AN OBJECT",
 		                            inSeconds: 7.5,
 		                            messageType: .planeEstimation)
@@ -258,11 +259,8 @@ class ViewController: UIViewController {
                 }
             }
 
-            if objectVisible {
-                self.focusSquare?.hide()
-            } else {
-                self.focusSquare?.unhide()
-            }
+            if objectVisible { self.focusSquare?.hide() }
+            else { self.focusSquare?.unhide() }
 			
             let (worldPos, planeAnchor, _)
                 = self.virtualObjectManager.worldPositionFromScreenPosition(screenCenter,

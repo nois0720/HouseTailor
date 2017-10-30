@@ -11,6 +11,7 @@ extension ViewController: ARSCNViewDelegate {
     // MARK: - ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        
         updateFocusSquare()
         
         if isMeasuring {

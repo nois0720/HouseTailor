@@ -67,7 +67,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             self.textManager.dismissPresentedAlert()
             self.textManager.showMessage("STARTING A NEW SESSION")
             
-            self.virtualObjectManager.removeAllVirtualObjects()
+//            self.virtualObjectManager.removeAllVirtualObjects()
             self.addObjectButton.setImage(#imageLiteral(resourceName: "add"), for: [])
             self.addObjectButton.setImage(#imageLiteral(resourceName: "addPressed"), for: [.highlighted])
             self.focusSquare?.isHidden = true
@@ -98,7 +98,6 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     
     // MARK: - private functions
 
-    
     private func stopRecordAction(recorder: RPScreenRecorder) {
         recorder.stopRecording(handler: { (previewController, error) in
             print("stop")
@@ -245,7 +244,19 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             modeSelectionViewController.delegate = self
         }
         if segueIdentifer == .showFloorPlan, let floorPlanViewController = segue.destination as? FloorPlanViewController {
-            floorPlanViewController.polygon = Polygon(lines: FPLines)
+            let floorPlanPolygon = Polygon(lines: FPLines)
+            
+            virtualObjectManager.virtualObjects.forEach {
+                if let frame = $0.frame {
+                    var furniturePolygons: [Polygon] = []
+                    
+                    furniturePolygons.append(frame.polygon())
+                    floorPlanViewController.floorPlan = FloorPlan(floorPlanPolygon: floorPlanPolygon,
+                                                                  virtualObjectPolygons: furniturePolygons)
+                }
+            }
+            
+            floorPlanViewController.floorPlan = FloorPlan(floorPlanPolygon: floorPlanPolygon)
         }
     }
 }

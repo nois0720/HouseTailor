@@ -27,11 +27,13 @@ struct VirtualObjectDefinition: Codable, Equatable {
     }
 }
 
-class VirtualObject: SCNReferenceNode, ReactsToScale {
+class VirtualObject: SCNReferenceNode {
     let definition: VirtualObjectDefinition
+    var frame: VirtualObjectFrame?
     
-    init(definition: VirtualObjectDefinition) {
+    init(definition: VirtualObjectDefinition, frame: VirtualObjectFrame? = nil) {
         self.definition = definition
+        self.frame = frame
         guard let url = Bundle.main.url(forResource: "Models.scnassets/\(definition.modelName)/\(definition.modelName)", withExtension: "scn")
             else { fatalError("can't find expected virtual object bundle resources") }
         super.init(url: url)!
@@ -44,13 +46,9 @@ class VirtualObject: SCNReferenceNode, ReactsToScale {
     // Use average of recent virtual object distances to avoid rapid changes in object scale.
     var recentVirtualObjectDistances = [Float]()
     
-    func reactToScale() {
-        for (nodeName, particleSize) in definition.particleScaleInfo {
-            guard let node = self.childNode(withName: nodeName, recursively: true), let particleSystem = node.particleSystems?.first
-                else { continue }
-            particleSystem.reset()
-            particleSystem.particleSize = CGFloat(scale.x * particleSize)
-        }
+    func setFrame(frame: VirtualObjectFrame) {
+        self.frame = frame
+        self.addChildNode(frame)
     }
 }
 
@@ -70,23 +68,3 @@ extension VirtualObject {
     
 }
 
-// MARK: - Protocols for Virtual Objects
-
-protocol ReactsToScale {
-	func reactToScale()
-}
-
-extension SCNNode {
-	
-	func reactsToScale() -> ReactsToScale? {
-		if let canReact = self as? ReactsToScale {
-			return canReact
-		}
-		
-		if parent != nil {
-			return parent!.reactsToScale()
-		}
-		
-		return nil
-	}
-}

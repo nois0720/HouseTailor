@@ -11,7 +11,9 @@ import UIKit
 class GridView: UIView {
     
     override init(frame: CGRect) {
-        super.init(frame: frame)
+        let gridFrame = CGRect(x: 0, y: 0, width: 750, height: 1336)
+        
+        super.init(frame: gridFrame)
         backgroundColor = .clear
     }
     
@@ -25,7 +27,7 @@ class GridView: UIView {
         let strokeColor = UIColor.white.cgColor
         context2?.setStrokeColor(strokeColor)
         
-        for i in 1...16 {
+        for i in 1...28 {
             let multiflier = CGFloat(i / 2)
             var offset: CGFloat = 50.0 * multiflier
             if i % 2 == 1 { offset = offset * -1 }

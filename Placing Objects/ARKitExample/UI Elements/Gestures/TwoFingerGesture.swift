@@ -75,7 +75,6 @@ class TwoFingerGesture: Gesture {
             
             allowRotation = true
             allowScaling = true
-                //UserDefaults.standard.bool(for: .scaleWithPinchGesture)
             
             initialDistanceBetweenFingers = (firstTouchPoint - secondTouchPoint).length()
             let sndPoint2fstPoint = firstTouchPoint - secondTouchPoint
@@ -190,10 +189,10 @@ class TwoFingerGesture: Gesture {
                  }*/
                 
                 virtualObject.scale = SCNVector3Uniform(newScale)
-
-                if let nodeWhichReactsToScale = virtualObject.reactsToScale() {
-                    nodeWhichReactsToScale.reactToScale()
-                }
+                
+//                if let nodeWhichReactsToScale = virtualObject.reactsToScale() {
+//                    nodeWhichReactsToScale.reactToScale()
+//                }
             }
             lastUsedObject = virtualObject
         }
