@@ -11,8 +11,12 @@ extension ViewController: ARSCNViewDelegate {
     // MARK: - ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        
         updateFocusSquare()
+        
+        if mode == Mode.loadFloorPlan {
+            textManager.showMessage("해당 좌표를 찍어주세요", autoHide: true)
+            return
+        }
         
         if isMeasuring {
             let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
@@ -127,6 +131,6 @@ extension ViewController: ARSCNViewDelegate {
         textManager.unblurBackground()
         session.run(standardConfiguration, options: [.resetTracking, .removeExistingAnchors])
         restartExperience(self)
-        textManager.showMessage("RESETTING SESSION")
+        textManager.showMessage("세션 재 시작")
     }
 }

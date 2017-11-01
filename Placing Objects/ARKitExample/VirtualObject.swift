@@ -12,18 +12,15 @@ import ARKit
 struct VirtualObjectDefinition: Codable, Equatable {
     let modelName: String
     let displayName: String
-    let particleScaleInfo: [String: Float]
     
-    init(modelName: String, displayName: String, particleScaleInfo: [String: Float] = [:]) {
+    init(modelName: String, displayName: String) {
         self.modelName = modelName
         self.displayName = displayName
-        self.particleScaleInfo = particleScaleInfo
     }
     
     static func ==(lhs: VirtualObjectDefinition, rhs: VirtualObjectDefinition) -> Bool {
         return lhs.modelName == rhs.modelName
             && lhs.displayName == rhs.displayName
-            && lhs.particleScaleInfo == rhs.particleScaleInfo
     }
 }
 

@@ -58,7 +58,7 @@ class ViewController: UIViewController {
     var restartExperienceButtonIsEnabled = true
     var mode = Mode.furniture {
         willSet {
-            if newValue == .furniture {
+            if newValue == Mode.furniture {
                 pinSetterView.isHidden = true
             } else {
                 pinSetterView.isHidden = false
@@ -86,8 +86,6 @@ class ViewController: UIViewController {
     // MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        Setting.registerDefaults()
 		setupUIControls()
         setupScene()
         setupSCNTechnique()
@@ -96,12 +94,13 @@ class ViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
+        print("ViewController viewDidAppear")
         // MARK: reset FP properties
         
-        FPLines = []
-        FPCurrentLine = nil
-        isMeasuringFP = false
-        isComplete = false
+//        FPLines = []
+//        FPCurrentLine = nil
+//        isMeasuringFP = false
+//        isComplete = false
         
 		// Prevent the screen from being dimmed after a while.
 		UIApplication.shared.isIdleTimerDisabled = true
@@ -118,6 +117,7 @@ class ViewController: UIViewController {
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
+        print("ViewController viewWillDisappear")
 		super.viewWillDisappear(animated)
 		session.pause()
 	}
@@ -205,9 +205,9 @@ class ViewController: UIViewController {
 		node.addChildNode(plane)
 		
 		textManager.cancelScheduledMessage(forType: .planeEstimation)
-		textManager.showMessage("SURFACE DETECTED")
+		textManager.showMessage("평면 감지 완료")
 		if virtualObjectManager.virtualObjects.isEmpty {
-			textManager.scheduleMessage("TAP + TO PLACE AN OBJECT", inSeconds: 7.5, messageType: .contentPlacement)
+			textManager.scheduleMessage("+ 버튼을 눌러 물체를 배치하세요", inSeconds: 7.5, messageType: .contentPlacement)
 		}
 	}
 		
@@ -224,10 +224,10 @@ class ViewController: UIViewController {
     }
 	
 	func resetTracking() {
-//        session.run(standardConfiguration, options: [])
-		session.run(standardConfiguration, options: [.resetTracking, .removeExistingAnchors])
+        session.run(standardConfiguration, options: [])
+//        session.run(standardConfiguration, options: [.resetTracking, .removeExistingAnchors])
         
-		textManager.scheduleMessage("FIND A SURFACE TO PLACE AN OBJECT",
+		textManager.scheduleMessage("물체를 배치하기 위해서 표면을 감지해야 합니다.",
 		                            inSeconds: 7.5,
 		                            messageType: .planeEstimation)
 	}
@@ -237,14 +237,19 @@ class ViewController: UIViewController {
     var focusSquare: FocusSquare?
 	
     func setupFocusSquare() {
-		updateQueue.async {
-			self.focusSquare?.isHidden = true
-			self.focusSquare?.removeFromParentNode()
-			self.focusSquare = FocusSquare()
-			self.sceneView.scene.rootNode.addChildNode(self.focusSquare!)
-		}
-		
-		textManager.scheduleMessage("TRY MOVING LEFT OR RIGHT", inSeconds: 5.0, messageType: .focusSquare)
+        updateQueue.async {
+            self.focusSquare?.isHidden = true
+            self.focusSquare?.removeFromParentNode()
+            self.focusSquare = FocusSquare()
+            self.sceneView.scene.rootNode.addChildNode(self.focusSquare!)
+        }
+        
+        self.focusSquare?.isHidden = true
+        self.focusSquare?.removeFromParentNode()
+        self.focusSquare = FocusSquare()
+        self.sceneView.scene.rootNode.addChildNode(self.focusSquare!)
+        
+		textManager.scheduleMessage("카메라를 좌우로 둘러보세요", inSeconds: 5.0, messageType: .focusSquare)
     }
 	
 	func updateFocusSquare() {

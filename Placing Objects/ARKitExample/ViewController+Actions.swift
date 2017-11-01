@@ -45,6 +45,14 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             if isComplete { stopMeasuringFP() }
             else if isMeasuringFP { continueMeasuringFP() }
             else { startMeasuringFP() }
+        case .loadFloorPlan:
+            print("load FloorPlan mode push +button")
+            
+            let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
+            guard let result = planeHitTestResults.first else { return }
+            
+            let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+            print(hitPosition)
         }
     }
 
@@ -65,7 +73,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             
             self.textManager.cancelAllScheduledMessages()
             self.textManager.dismissPresentedAlert()
-            self.textManager.showMessage("STARTING A NEW SESSION")
+            self.textManager.showMessage("세션 재 시작")
             
 //            self.virtualObjectManager.removeAllVirtualObjects()
             self.addObjectButton.setImage(#imageLiteral(resourceName: "add"), for: [])
@@ -236,6 +244,10 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             popoverController.sourceRect = button.bounds
         }
         
+        if let floorPlanViewController = segue.destination as? FloorPlanViewController {
+            floorPlanViewController.delegate = self
+        }
+        
         guard let identifier = segue.identifier, let segueIdentifer = SegueIdentifier(rawValue: identifier) else { return }
         if segueIdentifer == .showObjects, let objectsViewController = segue.destination as? VirtualObjectSelectionViewController {
             objectsViewController.delegate = self
@@ -244,19 +256,13 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             modeSelectionViewController.delegate = self
         }
         if segueIdentifer == .showFloorPlan, let floorPlanViewController = segue.destination as? FloorPlanViewController {
-            let floorPlanPolygon = Polygon(lines: FPLines)
+
+            var lineStartPoints: [SCNVector3] = []
+            FPLines.forEach { lineStartPoints.append($0.startNodeWorldPos()) }
             
-            virtualObjectManager.virtualObjects.forEach {
-                if let frame = $0.frame {
-                    var furniturePolygons: [Polygon] = []
-                    
-                    furniturePolygons.append(frame.polygon())
-                    floorPlanViewController.floorPlan = FloorPlan(floorPlanPolygon: floorPlanPolygon,
-                                                                  virtualObjectPolygons: furniturePolygons)
-                }
-            }
-            
-            floorPlanViewController.floorPlan = FloorPlan(floorPlanPolygon: floorPlanPolygon)
+            floorPlanViewController.floorPlan = FloorPlan(floorPlanVectors: lineStartPoints,
+                                                          virtualObjects: virtualObjectManager.virtualObjects)
         }
+        
     }
 }

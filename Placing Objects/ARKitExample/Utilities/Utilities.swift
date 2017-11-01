@@ -240,6 +240,10 @@ extension SCNVector3 {
         return SCNVector3(self.y * vec.z - self.z * vec.y, self.z * vec.x - self.x * vec.z, self.x * vec.y - self.y * vec.x)
     }
     
+    func mid(other: SCNVector3) -> SCNVector3 {
+        return SCNVector3((self.x + other.x) / 2, (self.y + other.y) / 2, (self.z + other.z) / 2)
+    }
+    
 }
 
 public let SCNVector3One: SCNVector3 = SCNVector3(1.0, 1.0, 1.0)

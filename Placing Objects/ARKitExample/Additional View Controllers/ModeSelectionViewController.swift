@@ -33,7 +33,7 @@ class ModeSelectionViewController: UITableViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        preferredContentSize = CGSize(width: 130, height: tableView.contentSize.height)
+        preferredContentSize = CGSize(width: 180, height: tableView.contentSize.height)
     }
     
     // MARK: - UITableViewDelegate

@@ -38,7 +38,7 @@ extension ViewController: VirtualObjectSelectionViewControllerDelegate, VirtualO
     }
     
     func virtualObjectManager(_ manager: VirtualObjectManager, couldNotPlace object: VirtualObject) {
-        textManager.showMessage("CANNOT PLACE OBJECT\nTry moving left or right.")
+        textManager.showMessage("오브젝트를 놓을 수 없습니다.\n오브젝트를 좌우로 움직여 보세요")
     }
     
     // MARK: - VirtualObjectSelectionViewControllerDelegate

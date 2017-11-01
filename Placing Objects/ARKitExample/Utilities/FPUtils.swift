@@ -8,8 +8,6 @@
 
 import ARKit
 
-
-
 func SCNVector3toGridCGPoint(vec: SCNVector3) -> CGPoint {
     let screen = UIScreen.main.bounds
     let screenWidth = screen.width / 2

@@ -16,7 +16,7 @@ extension ViewController: ModeSelectionViewControllerDelegate {
         
         mode = Mode.getMode(at: index)
         
-        if mode == .furniture {
+        if mode == Mode.furniture {
             lines.forEach { $0.delete() }
             lines.removeAll()
         }

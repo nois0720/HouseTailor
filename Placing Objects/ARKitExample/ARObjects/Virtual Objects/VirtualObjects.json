@@ -1,0 +1,10 @@
+[
+    {
+        "modelName": "chair",
+        "displayName": "Chair"
+    },
+    {
+    "modelName": "sofa",
+    "displayName": "Sofa"
+    }
+]

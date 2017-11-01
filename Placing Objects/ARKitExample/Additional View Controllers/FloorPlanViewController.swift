@@ -9,16 +9,10 @@
 import UIKit
 import ARKit
 
-struct FloorPlan: Codable {
-    var virtualObjectPolygons: [Polygon] = []
-    var floorPlanPolygon: Polygon
-    
-    init(floorPlanPolygon: Polygon, virtualObjectPolygons: [Polygon]? = nil) {
-        if let virtualObjectPolygons = virtualObjectPolygons {
-            self.virtualObjectPolygons = virtualObjectPolygons
-        }
-        self.floorPlanPolygon = floorPlanPolygon
-    }
+// MARK: - FloorPlanSelectDelegate
+
+protocol Load3DFloorPlanDelegate: class {
+    func load3DFloorPlan(didSelectDefinition definition: FloorPlanDefinition)
 }
 
 class FloorPlanViewController: UIViewController {
@@ -26,11 +20,113 @@ class FloorPlanViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var floorPlaneView: UIView!
     
-    var floorPlan: FloorPlan!
+    var layerArray = NSMutableArray()
+    var floorPlan: FloorPlan?
+    var delegate: Load3DFloorPlanDelegate?
+    
+    private var floorPlanDefinitions: [FloorPlanDefinition] = []
+    
+    private let fileManager = FileManager.default
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
+        
+        // for test
+//        inputTestData()
+        
+        loadJson()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    
+        removeFloorPlanUI()
+        // Load Logic
+        if let floorPlan = self.floorPlan { floorPlan.draw(on: floorPlaneView, with: layerArray) }
+
+        // draw FloorPlan on view
+    }
+    
+//    override func viewDidDisappear(_ animated: Bool) {
+//        super.viewDidDisappear(animated)
+//        print("viewDidDisappear")
+//
+//        removeFloorPlanUI()
+//    }
+    
+    // Mark: -Actions
+    
+    @IBAction func backToMain(_ button: UIButton) {
+        if let floorPlanDefinition = floorPlan?.floorPlanDefinition {
+            delegate?.load3DFloorPlan(didSelectDefinition: floorPlanDefinition)
+        }
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    var textField: UITextField?
+    
+    @IBAction func exportJson(_ button: UIButton) {
+        let alertController = UIAlertController(title: nil,
+                                                message: "평면도의 이름을 작성해주세요",
+                                                preferredStyle: .alert)
+        
+        let discardAction = UIAlertAction(title: "취소",
+                                          style: .destructive,
+                                          handler: nil)
+        
+        let saveAction = UIAlertAction(title: "저장",
+                                       style: .default,
+                                       handler: { [weak self] (action) in
+                                        self?.writeFile(name: self?.textField?.text ?? "no name")
+        })
+        
+        alertController.addTextField(configurationHandler: { (textField) in
+            self.textField = textField
+        })
+        
+        alertController.addAction(discardAction)
+        alertController.addAction(saveAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func writeFile(name: String) {
+        guard floorPlan?.floorPlanDefinition != nil else { return }
+        
+        let jsonEncoder = JSONEncoder()
+        
+        do {
+            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+            let fileURL = documentDirectory.appendingPathComponent("FloorPlans.json")
+            
+            floorPlan!.floorPlanDefinition.name = name
+            self.floorPlanDefinitions.append(floorPlan!.floorPlanDefinition)
+            
+            try jsonEncoder.encode(floorPlanDefinitions).write(to: fileURL)
+            
+            let alertController = UIAlertController(title: nil,
+                                                    message: "저장이 완료되었습니다",
+                                                    preferredStyle: .alert)
+            
+            let completeAction = UIAlertAction(title: "완료",
+                                           style: .default,
+                                           handler: nil)
+            
+            alertController.addAction(completeAction)
+            self.present(alertController, animated: true, completion: nil)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+}
+
+
+// Setup codes
+extension FloorPlanViewController {
+    func setupUI() {
         self.scrollView.minimumZoomScale = 0.5
         self.scrollView.maximumZoomScale = 3.0
         self.scrollView.showsHorizontalScrollIndicator = false
@@ -39,101 +135,59 @@ class FloorPlanViewController: UIViewController {
         self.scrollView.delegate = self
         
         floorPlaneView.addSubview(GridView(frame: view.frame))
-        
-//        // for device test
-//        drawPolygon(polygon: floorPlanPolygon)
-//        virtualObjectPolygons.forEach {
-//            drawPolygonWithRandomColor(polygon: $0)
-//        }
-        // for simulator
-        let line1 = Line(startNodePos: SCNVector3(3.2, 0, 0.4), endNodePos: SCNVector3(0.2, 0, 5.8))
-        let line2 = Line(startNodePos: SCNVector3(0.2, 0, 5.8), endNodePos: SCNVector3(-1.5, 0, -1.8))
-        let line3 = Line(startNodePos: SCNVector3(-1.5, 0, -1.8), endNodePos: SCNVector3(4.5, 0, -0.2))
-        let line4 = Line(startNodePos: SCNVector3(4.5, 0, -0.2), endNodePos: SCNVector3(3.2, 0, 0.4))
-        let lines: [Line] = [line1, line2, line3, line4]
-        let polygon = Polygon(lines: lines)
-
-        floorPlan = FloorPlan(floorPlanPolygon: polygon)
-        draw(polygon: polygon)
     }
     
-    // Mark: -Actions
-    
-    @IBAction func backToMain(_ button: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+    func inputTestData() {
+        // dummy data for test
+        let p1 = SCNVector3(3.2, 0, 0.4)
+        let p2 = SCNVector3(0.2, 0, 5.8)
+        let p3 = SCNVector3(-1.5, 0, -1.8)
+        let p4 = SCNVector3(4.5, 0, -0.2)
+        
+        self.floorPlan = FloorPlan(floorPlanVectors: [p1, p2, p3, p4])
     }
     
-    @IBAction func exportJson(_ button: UIButton) {
-        let jsonEncoder = JSONEncoder()
-        
+    func loadJson() {
         do {
-            let data = try jsonEncoder.encode(floorPlan)
-            print(data)
-        } catch {
+            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+            let fileURL = documentDirectory.appendingPathComponent("FloorPlans.json")
             
+            guard fileManager.fileExists(atPath: fileURL.path) else { return }
+            
+            let data = try Data(contentsOf: fileURL)
+            self.floorPlanDefinitions = try JSONDecoder().decode([FloorPlanDefinition].self, from: data)
+        } catch {
+            fatalError("Unable to decode VirtualObjects JSON: \(error)")
         }
-        
-//        jsonEncoder.encode(<#T##value: Encodable##Encodable#>)
     }
     
-    func draw(polygon: Polygon) {
-        func drawLengthTextLabel() {
-            polygon.lengthTexts.forEach {
-                let textLabel: UILabel = .init(frame: CGRect(x: $0.pos.x, y: $0.pos.y, width: 80, height: 30))
-                textLabel.text = String(format: "%.2fm", $0.length / 100)
-                textLabel.textAlignment = .left
-                floorPlaneView.addSubview(textLabel)
+    func removeFloorPlanUI() {
+        floorPlaneView.layer.sublayers?.forEach {
+            if layerArray.contains($0) {
+                $0.removeFromSuperlayer()
+                layerArray.remove($0)
             }
         }
         
-        let shape = CAShapeLayer()
-        floorPlaneView.layer.addSublayer(shape)
-        
-        shape.lineWidth = 2
-        shape.opacity = 0.9
-        shape.lineJoin = kCALineJoinMiter
-        shape.strokeColor = UIColor(red: 1, green: 0.7, blue: 0, alpha: 0.8).cgColor
-        shape.fillColor = UIColor(red: 0.3, green: 0.52, blue: 0.6, alpha: 1).cgColor
-        
-        let path = UIBezierPath()
-        
-        path.move(to: polygon.startPoint)
-        polygon.movePoints.forEach { path.addLine(to: $0) }
-        path.close()
-        shape.path = path.cgPath
-        
-        drawLengthTextLabel()
-    }
-    
-    func drawPolygonWithRandomColor(polygon: Polygon) {
-        func drawLengthTextLabel() {
-            polygon.lengthTexts.forEach {
-                let textLabel: UILabel = .init(frame: CGRect(x: $0.pos.x, y: $0.pos.y, width: 80, height: 30))
-                
-                textLabel.text = String(format: "%.2fm", $0.length / 100)
-                textLabel.textAlignment = .left
-                floorPlaneView.addSubview(textLabel)
+        layerArray.forEach {
+            if let view = $0 as? UIView {
+                view.removeFromSuperview()
             }
         }
         
-        let shape = CAShapeLayer()
-        floorPlaneView.layer.addSublayer(shape)
+        layerArray.removeAllObjects()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination.navigationController?.childViewControllers.first
+            as? JsonFileTableViewController{
+            vc.delegate = self
+        }
         
-        shape.lineWidth = 1
-        shape.opacity = 0.9
-        shape.lineJoin = kCALineJoinMiter
-        
-        shape.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).cgColor
-        shape.fillColor = UIColor(red: CGFloat(arc4random()) / CGFloat(UINT32_MAX), green: CGFloat(arc4random()) / CGFloat(UINT32_MAX), blue: CGFloat(arc4random()) / CGFloat(UINT32_MAX), alpha: 1.0).cgColor
-        
-        let path = UIBezierPath()
-        
-        path.move(to: polygon.startPoint)
-        polygon.movePoints.forEach { path.addLine(to: $0) }
-        path.close()
-        shape.path = path.cgPath
-        
-        drawLengthTextLabel()
+        if let vc = segue.destination as? JsonFileTableViewController {
+            print("for no naviController test")
+            vc.delegate = self
+        }
     }
 }
 
@@ -141,8 +195,11 @@ extension FloorPlanViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return floorPlaneView
     }
-    
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        print("zoom")
+}
+
+extension FloorPlanViewController: FloorPlanSelectDelegate {
+    func floorPlanSelect(didSelectDefinition definition: FloorPlanDefinition) {
+        print("floorPlanSelectDelegate: didSelectDefinition")
+        self.floorPlan = FloorPlan(definition: definition)
     }
 }

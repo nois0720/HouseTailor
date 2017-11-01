@@ -36,8 +36,6 @@ class VirtualObjectFrame: SCNNode {
     private let nodeRadius: CGFloat = 0.01  // 1cm
     private let textDepth: CGFloat = 0.1    // 10cm
     
-    private var virtualObject: VirtualObject!
-    
     init?(virtualObject: VirtualObject) {
         super.init()
         if virtualObject.definition.modelName == "sofa" {
@@ -47,8 +45,6 @@ class VirtualObjectFrame: SCNNode {
                 self.boundingBox = boundingBox
             }
         }
-        
-        self.virtualObject = virtualObject
         
         let sphere = SCNSphere(radius: 0.5)
         sphere.firstMaterial?.diffuse.contents = nodeColor
@@ -141,33 +137,20 @@ class VirtualObjectFrame: SCNNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func polygon() -> Polygon {
+    func projectPoints() -> [SCNVector3] {
         
         // (n3)-(n4)
         //  |    |
         //  |    |
         // (n1)-(n2)
         
-        let l1 = Line(startNodePos: n1.worldPosition, endNodePos: n2.worldPosition)
-        let l2 = Line(startNodePos: n2.worldPosition, endNodePos: n4.worldPosition)
-        let l3 = Line(startNodePos: n4.worldPosition, endNodePos: n3.worldPosition)
-        let l4 = Line(startNodePos: n3.worldPosition, endNodePos: n1.worldPosition)
+        let pos1 = n1.worldPosition
+        let pos2 = n2.worldPosition
+        let pos3 = n4.worldPosition
+        let pos4 = n3.worldPosition
         
-        print(l1.startNodePos())
-        print(l1.endNodePos())
-        
-        print(l2.startNodePos())
-        print(l2.endNodePos())
-        
-        print(l3.startNodePos())
-        print(l3.endNodePos())
-        
-        print(l4.startNodePos())
-        print(l4.endNodePos())
-        let lines: [Line] = [l1, l2, l3, l4]
-        let polygon: Polygon = .init(lines: lines)
-        
-        return polygon
+        let vectors: [SCNVector3] = [pos1, pos2, pos3, pos4]
+        return vectors
     }
     
 }

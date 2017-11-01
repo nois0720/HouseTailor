@@ -9,7 +9,7 @@
 import ARKit
 import SceneKit
 
-class Line {
+class Line: SCNNode {
     private var startNode: SCNNode!     // 시작 노드
     private var endNode: SCNNode!       // 끝 노드
     private var lenText: SCNText!       // 길이 텍스트
@@ -62,6 +62,7 @@ class Line {
         lenTextNode.addChildNode(textWrapperNode)
         lenTextNode.constraints = [constraint]
         sceneView.scene.rootNode.addChildNode(lenTextNode)
+        super.init()
     }
     
     init(startNodePos: SCNVector3, endNodePos: SCNVector3) {
@@ -93,6 +94,11 @@ class Line {
         lenTextNode = SCNNode()
         lenTextNode.addChildNode(textWrapperNode)
         sceneView = nil
+        super.init()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func update(to vector: SCNVector3) {
@@ -161,10 +167,11 @@ class Line {
         lineNode?.categoryBitMask = number
     }
     
-    private func removeFromParentNode() {
+    override func removeFromParentNode() {
         startNode.removeFromParentNode()
         lineNode?.removeFromParentNode()
         endNode.removeFromParentNode()
         lenTextNode.removeFromParentNode()
+        super.removeFromParentNode()
     }
 }

@@ -75,16 +75,14 @@ class VirtualObjectManager {
     }
 	
 	private func unloadVirtualObject(_ object: VirtualObject) {
-		updateQueue.async { // 왜 serial queue를 사용?
-			object.unload()
-			object.removeFromParentNode()
-			if self.lastUsedObject == object {
-				self.lastUsedObject = nil
-				if self.virtualObjects.count > 1 {
-					self.lastUsedObject = self.virtualObjects[0]
-				}
-			}
-		}
+        object.unload()
+        object.removeFromParentNode()
+        if self.lastUsedObject == object {
+            self.lastUsedObject = nil
+            if self.virtualObjects.count > 1 {
+                self.lastUsedObject = self.virtualObjects[0]
+            }
+        }
 	}
 	
 	// MARK: - Loading object
@@ -214,40 +212,45 @@ class VirtualObjectManager {
 		let cameraWorldPos = cameraTransform.translation
 		var cameraToPosition = pos - cameraWorldPos
 		
-		// Limit the distance of the object from the camera to a maximum of 10 meters.
+		// 카메라와 10미터 이상 넘지 않도록 함.
         if simd_length(cameraToPosition) > 10 {
             cameraToPosition = simd_normalize(cameraToPosition)
             cameraToPosition *= 10
         }
 
-		// Compute the average distance of the object from the camera over the last ten
-		// updates. If filterPosition is true, compute a new position for the object
-		// with this average. Notice that the distance is applied to the vector from
-		// the camera to the content, so it only affects the percieved distance of the
-		// object - the averaging does _not_ make the content "lag".
-		let hitTestResultDistance = simd_length(cameraToPosition)
+		// 카메라와 virtual object의 최근 10개의 거리값을 이용하여, 평균값을 구함.
+        // average값 사용하게 되면서 plane detection이 되지 않더라도 이동에 큰 문제는 없어보이도록 구현할 수 있음.
+        let hitTestResultDistance = simd_length(cameraToPosition)
 		
-		object.recentVirtualObjectDistances.append(hitTestResultDistance)
-		object.recentVirtualObjectDistances.keepLast(10)
-		
-		if filterPosition, let averageDistance = object.recentVirtualObjectDistances.average {
-			let averagedDistancePos = cameraWorldPos + simd_normalize(cameraToPosition) * averageDistance
-			object.simdPosition = averagedDistancePos
-		} else {
-			object.simdPosition = cameraWorldPos + cameraToPosition
-		}
+        object.recentVirtualObjectDistances.append(hitTestResultDistance)
+        object.recentVirtualObjectDistances.keepLast(10)
+
+        // hitTest에서 Plane과 hit되지 못한경우, 카메라로부터 떨어져있던 거리의 평균값 사용.
+        if filterPosition, let averageDistance = object.recentVirtualObjectDistances.average {
+            let averagedDistancePos = cameraWorldPos + simd_normalize(cameraToPosition) * averageDistance
+            print("aa")
+            object.simdPosition = averagedDistancePos
+        } else {
+			object.simdPosition = pos
+        }
 	}
 	
 	func checkIfObjectShouldMoveOntoPlane(anchor: ARPlaneAnchor, planeAnchorNode: SCNNode) {
 		for object in virtualObjects {
-			// Get the object's position in the plane's coordinate system.
+			// plane 좌표계상에서의 object position을 얻음.
 			let objectPos = planeAnchorNode.convertPosition(object.position, from: object.parent)
 			
 			if objectPos.y == 0 {
-				return; // The object is already on the plane - nothing to do here.
+				return; // 오브젝트가 이미 평면상에 존재
 			}
 			
-			// Add 10% tolerance to the corners of the plane.
+			//  --------
+            // | ------ㄱ|
+            // |ㄴ------ |
+            //  --------
+            // 외부 사각형이 tolerance 적용한 사각혐.
+            // 10% 여유있게 확인
+            
 			let tolerance: Float = 0.1
 			
 			let minX: Float = anchor.center.x - anchor.extent.x / 2 - anchor.extent.x * tolerance
@@ -255,19 +258,21 @@ class VirtualObjectManager {
 			let minZ: Float = anchor.center.z - anchor.extent.z / 2 - anchor.extent.z * tolerance
 			let maxZ: Float = anchor.center.z + anchor.extent.z / 2 + anchor.extent.z * tolerance
 			
+            // 이 사각형 외부에 있으면 return
 			if objectPos.x < minX || objectPos.x > maxX || objectPos.z < minZ || objectPos.z > maxZ {
 				return
 			}
 			
-			// Move the object onto the plane if it is near it (within 5 centimeters).
+			//  만약, y좌표값을 비교하여 5센치 이내이면 오브젝트를 평면 위로 이동.
 			let verticalAllowance: Float = 0.05
-			let epsilon: Float = 0.001 // Do not bother updating if the different is less than a mm.
+			let epsilon: Float = 0.001 // 1mm 이내이면 안움직임.
+            
 			let distanceToPlane = abs(objectPos.y)
 			if distanceToPlane > epsilon && distanceToPlane < verticalAllowance {
 				delegate?.virtualObjectManager(self, didMoveObjectOntoNearbyPlane: object)
 				
 				SCNTransaction.begin()
-				SCNTransaction.animationDuration = CFTimeInterval(distanceToPlane * 500) // Move 2 mm per second.
+                SCNTransaction.animationDuration = CFTimeInterval(distanceToPlane * 500) // Move 2 mm per second.
 				SCNTransaction.animationTimingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
 				object.position.y = anchor.transform.columns.3.y
 				SCNTransaction.commit()
@@ -291,6 +296,7 @@ class VirtualObjectManager {
 	
 	func worldPositionFromScreenPosition(_ position: CGPoint,
 	                                     in sceneView: ARSCNView) -> (position: float3?, planeAnchor: ARPlaneAnchor?, hitAPlane: Bool) {
+        
 		var planeHitTestResults = sceneView.hitTest(position, types: .existingPlaneUsingExtent)
 		if let result = planeHitTestResults.first {
 			
@@ -320,7 +326,7 @@ class VirtualObjectManager {
             return (planeHitTestPosition, planeAnchor as? ARPlaneAnchor, true)
         }
         
-		return (nil, nil, false)
+        return (nil, nil, false)
 	}
 }
 

@@ -12,6 +12,7 @@ enum Mode {
     case furniture
     case measure
     case floorPlan
+    case loadFloorPlan
 }
 
 extension Mode {
@@ -23,6 +24,8 @@ extension Mode {
             return "Measure Mode"
         case 2:
             return "FloorPlan Mode"
+        case 3:
+            return "Load FloorPlan Mode"
         default:
             return "Furniture Mode"
         }
@@ -36,6 +39,8 @@ extension Mode {
             return "Measure Mode"
         case .floorPlan:
             return "FloorPlan Mode"
+        case .loadFloorPlan:
+            return "Load FloorPlan Mode"
         }
     }
     
@@ -47,6 +52,8 @@ extension Mode {
             return .measure
         case 2:
             return .floorPlan
+        case 3:
+            return .loadFloorPlan
         default:
             return .furniture
         }
