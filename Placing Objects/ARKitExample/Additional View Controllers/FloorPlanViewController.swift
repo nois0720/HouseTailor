@@ -6,8 +6,8 @@
 //  Copyright © 2017년 Apple. All rights reserved.
 //
 
-import UIKit
 import ARKit
+import UIKit
 
 // MARK: - FloorPlanSelectDelegate
 
@@ -48,13 +48,6 @@ class FloorPlanViewController: UIViewController {
 
         // draw FloorPlan on view
     }
-    
-//    override func viewDidDisappear(_ animated: Bool) {
-//        super.viewDidDisappear(animated)
-//        print("viewDidDisappear")
-//
-//        removeFloorPlanUI()
-//    }
     
     // Mark: -Actions
     
@@ -185,7 +178,6 @@ extension FloorPlanViewController {
         }
         
         if let vc = segue.destination as? JsonFileTableViewController {
-            print("for no naviController test")
             vc.delegate = self
         }
     }

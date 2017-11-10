@@ -28,7 +28,7 @@ class Plane: SCNNode {
     // MARK: - ARKit
 	
 	func update(_ anchor: ARPlaneAnchor) {
-		self.anchor = anchor
+        self.anchor = anchor
 	}
 		
 }

@@ -13,8 +13,8 @@ func SCNVector3toGridCGPoint(vec: SCNVector3) -> CGPoint {
     let screenWidth = screen.width / 2
     let screenHeight = screen.height / 2
     
-    let x = CGFloat(vec.x * 50.0) + screenWidth
-    let y = CGFloat(vec.z * 50.0) + screenHeight
+    let x = CGFloat(vec.x) * GridView.cellSize + screenWidth
+    let y = CGFloat(vec.z) * GridView.cellSize + screenHeight
 
     return CGPoint(x: x, y: y)
 }
@@ -36,10 +36,6 @@ func eulerToQuaternion(pitch: Double, roll: Double, yaw: Double) -> SCNQuaternio
     quaternion.z = Float(sy * cr * cp - cy * sr * sp)
     
     return quaternion
-}
-
-func quaternionToEulerAngle() {
-    
 }
 
 //def quaternion_to_euler_angle(w, x, y, z):

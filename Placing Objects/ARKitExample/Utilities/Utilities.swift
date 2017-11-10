@@ -279,12 +279,25 @@ func lineSCNNode(from v1: SCNVector3, to v2: SCNVector3, color: UIColor = .black
     return node
 }
 
-func polygonSCNNode(from v1: SCNVector3, to v2: SCNVector3, color: UIColor = .black) -> SCNNode {
-    let indices: [Int32] = [0, 1]
-    let source = SCNGeometrySource(vertices: [v1, v2])
-    let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+func polygonSCNNode(vertices: [SCNVector3], color: UIColor = .black) -> SCNNode {
+    var indices: [Int32] = []
+    
+    indices.append(Int32(vertices.count))
+    vertices.indices.forEach {
+        indices.append(Int32($0))
+    }
+    
+    let indexData = Data(bytes: indices, count: indices.count * MemoryLayout<Int32>.size)
+    
+    let source = SCNGeometrySource(vertices: vertices)
+    let element = SCNGeometryElement(data: indexData, primitiveType: .polygon, primitiveCount: 1, bytesPerIndex: MemoryLayout<Int32>.size)
     let geometry = SCNGeometry(sources: [source], elements: [element])
-    geometry.firstMaterial?.diffuse.contents = color
+    
+    let material = SCNMaterial()
+    
+    material.diffuse.contents = color
+    material.isDoubleSided = true
+    geometry.firstMaterial = material
     
     let node = SCNNode(geometry: geometry)
     return node

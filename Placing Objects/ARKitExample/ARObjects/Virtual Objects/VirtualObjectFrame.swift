@@ -144,6 +144,7 @@ class VirtualObjectFrame: SCNNode {
         //  |    |
         // (n1)-(n2)
         
+        // n1, n2, n4, n3순인 이유는 CALayer를 사용하기 때문에 그리는 순서가 중요.
         let pos1 = n1.worldPosition
         let pos2 = n2.worldPosition
         let pos3 = n4.worldPosition

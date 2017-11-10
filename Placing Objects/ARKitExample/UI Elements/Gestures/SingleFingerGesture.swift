@@ -64,41 +64,12 @@ class SingleFingerGesture: Gesture {
         if translationThresholdPassed {
             
             let offsetPos = latestTouchLocation - dragOffset
-            objectManager.translate(virtualObject, in: sceneView, basedOn: offsetPos, instantly: false)
+            objectManager.translate(virtualObject, in: sceneView, basedOn: offsetPos)
             hasMovedObject = true
         }
     }
     
     func finishGesture() {
-//        // Single finger touch allows teleporting the object or interacting with it.
-//        
-//        // Do not do anything if this gesture is being finished because
-//        // another finger has started touching the screen.
-//        if currentTouches.count > 1 {
-//            return
-//        }
-//        
-//        // Do not do anything either if the touch has dragged the object around.
-//        if hasMovedObject {
-//            return
-//        }
-//        
-//        if lastUsedObject != nil {
-//            // If this gesture hasn't moved the object then perform a hit test against
-//            // the geometry to check if the user has tapped the object itself.
-//            // - Note: If the object covers a significant
-//            // percentage of the screen then we should interpret the tap as repositioning
-//            // the object.
-//            let isObjectHit = virtualObject(at: latestTouchLocation) != nil
-//
-//            if !isObjectHit {
-//                // Teleport the object to whereever the user touched the screen - as long as the
-//                // drag threshold has not been reached.
-//                if !translationThresholdPassed {
-//                    objectManager.translate(lastUsedObject!, in: sceneView, basedOn: latestTouchLocation, instantly: true, infinitePlane: false)
-//                }
-//            }
-//        }
     }
     
 }

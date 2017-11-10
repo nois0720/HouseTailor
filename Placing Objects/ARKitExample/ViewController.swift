@@ -16,11 +16,14 @@ class ViewController: UIViewController {
     var screenCenter: CGPoint?
 
     let session = ARSession()
-    let standardConfiguration: ARWorldTrackingConfiguration = {
+    let worldTrackingConfiguration: ARWorldTrackingConfiguration = {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
         return configuration
     }()
+    
+    // MARK: delaunay triangle rootnode
+    let dtRootNode: SCNNode = SCNNode()
     
     // MARK: AR Measure Properties
     
@@ -37,6 +40,16 @@ class ViewController: UIViewController {
     var FPCurrentLine: Line?
     var isMeasuringFP: Bool = false
     var isComplete: Bool = false
+    
+    // MARK: for load
+    
+    var floorPlanDefinition: FloorPlanDefinition?
+    var selectCount: Int = 0
+    var vec: SCNVector3 = SCNVector3(0, 0, 0)
+    var vec2: SCNVector3 = SCNVector3(0, 0, 0)
+    var betweenAngle: Float = 0
+    var firstPoint = SCNVector3(0, 0, 0)
+    var rootFPNode = SCNNode()
     
     // MARK: - Virtual Object Manipulation Properties
     
@@ -59,9 +72,9 @@ class ViewController: UIViewController {
     var mode = Mode.furniture {
         willSet {
             if newValue == Mode.furniture {
-                pinSetterView.isHidden = true
+                pinView.isHidden = true
             } else {
-                pinSetterView.isHidden = false
+                pinView.isHidden = false
             }
         }
     }
@@ -78,12 +91,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var restartExperienceButton: UIButton!
     @IBOutlet weak var recordButton: UIButton!
     
-    @IBOutlet weak var pinSetterView: UIView!
+    @IBOutlet weak var pinView: UIView!
     
-    // MARK: - Queues
+    // MARK: - Queue
+    
 	let updateQueue = DispatchQueue(label: "serialSceneKitQueue")
 	
     // MARK: - View Controller Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 		setupUIControls()
@@ -93,17 +108,6 @@ class ViewController: UIViewController {
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		
-        print("ViewController viewDidAppear")
-        // MARK: reset FP properties
-        
-//        FPLines = []
-//        FPCurrentLine = nil
-//        isMeasuringFP = false
-//        isComplete = false
-        
-		// Prevent the screen from being dimmed after a while.
-		UIApplication.shared.isIdleTimerDisabled = true
 		
 		if ARWorldTrackingConfiguration.isSupported {
 			// Start the ARSession.
@@ -133,10 +137,10 @@ class ViewController: UIViewController {
         messagePanel.isHidden = true
         messageLabel.text = ""
         
-        // set pinSetterView. it is circle for setting pin
-        pinSetterView.layer.cornerRadius = 3.0
-        pinSetterView.clipsToBounds = true
-        pinSetterView.isHidden = true
+        // set pinView. it is circle for setting pin
+        pinView.layer.cornerRadius = 3.0
+        pinView.clipsToBounds = true
+        pinView.isHidden = true
         
         // hide navi bar
         self.navigationController?.isNavigationBarHidden = true
@@ -152,17 +156,18 @@ class ViewController: UIViewController {
 		sceneView.delegate = self
 		sceneView.session = session
         
+        sceneView.scene.rootNode.addChildNode(dtRootNode)
         /* debuging options */
-        // sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         // sceneView.showsStatistics = true
 		
 		sceneView.scene.enableEnvironmentMapWithIntensity(25)
-		
 		setupFocusSquare()
 		
-		DispatchQueue.main.async {
-			self.screenCenter = self.sceneView.bounds.mid
-		}
+        // ttt
+        startTimer()
+        
+        self.screenCenter = self.sceneView.bounds.mid
 	}
     
     func setupSCNTechnique() {
@@ -224,8 +229,8 @@ class ViewController: UIViewController {
     }
 	
 	func resetTracking() {
-        session.run(standardConfiguration, options: [])
-//        session.run(standardConfiguration, options: [.resetTracking, .removeExistingAnchors])
+        // 세션이 처음 실행될 때에는 옵션 효과는 없음.
+        session.run(worldTrackingConfiguration, options: [.resetTracking, .removeExistingAnchors])
         
 		textManager.scheduleMessage("물체를 배치하기 위해서 표면을 감지해야 합니다.",
 		                            inSeconds: 7.5,
@@ -244,12 +249,7 @@ class ViewController: UIViewController {
             self.sceneView.scene.rootNode.addChildNode(self.focusSquare!)
         }
         
-        self.focusSquare?.isHidden = true
-        self.focusSquare?.removeFromParentNode()
-        self.focusSquare = FocusSquare()
-        self.sceneView.scene.rootNode.addChildNode(self.focusSquare!)
-        
-		textManager.scheduleMessage("카메라를 좌우로 둘러보세요", inSeconds: 5.0, messageType: .focusSquare)
+		textManager.scheduleMessage("카메라를 좌우로 이동해주세요", inSeconds: 5.0, messageType: .focusSquare)
     }
 	
 	func updateFocusSquare() {

@@ -34,6 +34,8 @@ class VirtualObject: SCNReferenceNode {
         guard let url = Bundle.main.url(forResource: "Models.scnassets/\(definition.modelName)/\(definition.modelName)", withExtension: "scn")
             else { fatalError("can't find expected virtual object bundle resources") }
         super.init(url: url)!
+        
+        self.name = "\(definition.modelName) reference node"
     }
     
     required init?(coder aDecoder: NSCoder) {

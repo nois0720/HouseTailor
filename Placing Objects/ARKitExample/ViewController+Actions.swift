@@ -31,6 +31,17 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     
     // (+) 버튼
     @IBAction func chooseObject(_ button: UIButton) {
+//        guard let screenCenter = screenCenter,
+//            let ray = rayFromScreenPos(screenCenter),
+//            let pointCloud = session.currentFrame?.rawFeaturePoints else {
+//            return
+//        }
+        
+//        let hitPosition = virtualObjectManager.verticalHitTest(ray: ray, pointCloud: pointCloud)
+//
+//        if let _hitPosition = hitPosition {
+//            currentLine = Line(sceneView: sceneView, startNodePos: _hitPosition, rootNode: sceneView.scene.rootNode)
+//        }
         // Abort if we are about to load another object to avoid concurrent modifications of the scene.
         if isLoadingObject { return }
         
@@ -46,13 +57,88 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             else if isMeasuringFP { continueMeasuringFP() }
             else { startMeasuringFP() }
         case .loadFloorPlan:
-            print("load FloorPlan mode push +button")
-            
             let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
             guard let result = planeHitTestResults.first else { return }
             
             let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
-            print(hitPosition)
+            
+            let sphere = SCNSphere(radius: 0.5)
+            sphere.firstMaterial?.diffuse.contents = UIColor.red.cgColor
+            sphere.firstMaterial?.lightingModel = .constant
+            
+            let pin1 = SCNNode(geometry: sphere)
+            pin1.scale = SCNVector3(0.01, 0.01, 0.01)
+            pin1.position = hitPosition
+            sceneView.scene.rootNode.addChildNode(pin1)
+            
+            if selectCount == 0 {
+                firstPoint = hitPosition
+                vec2 = hitPosition
+                selectCount = selectCount + 1
+                return
+            } else if selectCount == 1 {
+                vec2 -= hitPosition
+                selectCount = selectCount + 1
+                vec2 = vec2 * -1
+            }
+            
+            betweenAngle = acos(vec.dot(vec2) / (vec.length() * vec2.length()))
+            
+            guard let definition = floorPlanDefinition else { return }
+            
+            let rootFPNode = SCNNode()
+            rootFPNode.name = "rootFPNode"
+            sceneView.scene.rootNode.addChildNode(rootFPNode)
+            
+            let subOffset = definition.floorPlaneInfo.first!
+            
+            for (index, point) in definition.floorPlaneInfo.enumerated() {
+                var nextPoint: SCNVector3
+                
+                if index == definition.floorPlaneInfo.endIndex - 1 { nextPoint = definition.floorPlaneInfo[0] }
+                else { nextPoint = definition.floorPlaneInfo[index + 1] }
+                
+                let startPoint = point - subOffset
+                let endPoint = nextPoint - subOffset
+                let line = Line(sceneView: sceneView, startNodePos: startPoint, rootNode: rootFPNode)
+                line.update(to: endPoint)
+                
+                rootFPNode.addChildNode(line)
+            }
+            
+            definition.virtualObjectCoding.forEach {
+                let virtualObject = VirtualObject(definition: $0.virtualObjectDefinition)
+                virtualObject.position = $0.position - subOffset
+                virtualObject.eulerAngles = $0.eulerAngle
+                virtualObject.scale = $0.scale
+                rootFPNode.addChildNode(virtualObject)
+                
+                virtualObjectManager.virtualObjects.append(virtualObject)
+                // Load the content asynchronously.
+                DispatchQueue.global(qos: .userInitiated).async {
+                    virtualObject.load()
+                    
+                    // Immediately place the object in 3D space.
+                    self.updateQueue.async {
+                        guard let frame = VirtualObjectFrame(virtualObject: virtualObject) else {
+                            return
+                        }
+                        
+                        virtualObject.setFrame(frame: frame)
+                    }
+                }
+                
+                if virtualObject.parent == nil {
+                    updateQueue.async {
+                        self.sceneView.scene.rootNode.addChildNode(virtualObject)
+                    }
+                }
+            }
+
+            rootFPNode.position = firstPoint
+            rootFPNode.eulerAngles.y = -betweenAngle
+            
+            mode = .furniture
         }
     }
 
@@ -108,7 +194,6 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
 
     private func stopRecordAction(recorder: RPScreenRecorder) {
         recorder.stopRecording(handler: { (previewController, error) in
-            print("stop")
             let alertController = UIAlertController(title: "Recording",
                                                     message: "녹화한 내용을 확인하시겠습니까?",
                                                     preferredStyle: .alert)
@@ -144,7 +229,6 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         // startCapture
         recorder.startRecording { (error) in
             guard error == nil else {
-                print(error!)
                 return
             }
             print("record start")
@@ -152,12 +236,26 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     }
     
     private func startMeasuring() {
+//        guard let screenCenter = screenCenter,
+//            let ray = rayFromScreenPos(screenCenter),
+//            let pointCloud = session.currentFrame?.rawFeaturePoints else {
+//                return
+//        }
+//
+//        let hitPosition = virtualObjectManager.verticalHitTest(ray: ray, pointCloud: pointCloud)
+//
+//        if let _hitPosition = hitPosition {
+//            currentLine = Line(sceneView: sceneView, startNodePos: _hitPosition, rootNode: sceneView.scene.rootNode)
+//            isMeasuring = true
+//        }
+        
+        
         let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
-        
+
         guard let result = planeHitTestResults.first else { return }
-        
+
         let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
-        currentLine = Line(sceneView: sceneView, startNodePos: hitPosition)
+        currentLine = Line(sceneView: sceneView, startNodePos: hitPosition, rootNode: sceneView.scene.rootNode)
         isMeasuring = true
     }
     
@@ -177,13 +275,13 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         
         let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
         isMeasuringFP = true
-        FPCurrentLine = Line(sceneView: sceneView, startNodePos: hitPosition)
+        FPCurrentLine = Line(sceneView: sceneView, startNodePos: hitPosition, rootNode: sceneView.scene.rootNode)
     }
     
     private func continueMeasuringFP() {
         if let FPCurrentLine = FPCurrentLine {
             FPLines.append(FPCurrentLine)
-            self.FPCurrentLine = Line(sceneView: sceneView, startNodePos: FPCurrentLine.endNodePos())
+            self.FPCurrentLine = Line(sceneView: sceneView, startNodePos: FPCurrentLine.endNodePos(), rootNode: sceneView.scene.rootNode)
         }
     }
     

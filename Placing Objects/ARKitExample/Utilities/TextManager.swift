@@ -19,26 +19,26 @@ extension ARCamera.TrackingState {
     var presentationString: String {
         switch self {
         case .notAvailable:
-            return "TRACKING UNAVAILABLE"
+            return "트래킹이 불가능합니다."
         case .normal:
-            return "TRACKING NORMAL"
+            return "트래킹 하기에 적합합니다."
         case .limited(let reason):
             switch reason {
             case .excessiveMotion:
-                return "TRACKING LIMITED\nToo much camera movement"
+                return "트래킹이 제한됩니다.\n너무 빠르게 카메라를 이동하지 마십시오."
             case .insufficientFeatures:
-                return "TRACKING LIMITED\nNot enough surface detail"
+                return "트래킹이 제한됩니다.\n표면에 대한 정보를 얻기가 힘듭니다."
             case .initializing:
-                return "Initializing AR Session"
+                return "AR 세션을 초기화합니다."
             }
         }
     }
     var recommendation: String? {
         switch self {
         case .limited(.excessiveMotion):
-            return "Try slowing down your movement, or reset the session."
+            return "천천히 움직이거나, 세션을 재시작 하십시오."
         case .limited(.insufficientFeatures):
-            return "Try pointing at a flat surface, or reset the session."
+            return "평평한 표면을 보거나, 세션을 재시작 하십시오."
         default:
             return nil
         }
@@ -91,7 +91,7 @@ class TextManager {
 				// about 200 words per minute and the average English word is 5 characters
 				// long. So 1000 characters per minute / 60 = 15 characters per second.
 				// We limit the duration to a range of 1-10 seconds.
-				let charCount = text.characters.count
+                let charCount = text.characters.count
 				let displayDuration: TimeInterval = min(10, Double(charCount) / 15.0 + 1.0)
 				self.messageHideTimer =
                     Timer.scheduledTimer(withTimeInterval: displayDuration,

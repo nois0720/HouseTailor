@@ -39,8 +39,7 @@ class Gesture {
 		self.lastUsedObject = lastUsedObject
 		self.objectManager = objectManager
 		
-		// Refresh the current gesture at 60 Hz - This ensures smooth updates even when no
-		// new touch events are incoming (but the camera might have moved).
+		// 1초에 60번 Gesture update.
 		self.refreshTimer = Timer.scheduledTimer(withTimeInterval: 0.016_667, repeats: true, block: { _ in
 			self.updateGesture()
 		})

@@ -10,6 +10,8 @@ import UIKit
 
 class GridView: UIView {
     
+    static let cellSize: CGFloat = 50.0
+    
     override init(frame: CGRect) {
         let gridFrame = CGRect(x: 0, y: 0, width: 750, height: 1336)
         
@@ -29,7 +31,7 @@ class GridView: UIView {
         
         for i in 1...28 {
             let multiflier = CGFloat(i / 2)
-            var offset: CGFloat = 50.0 * multiflier
+            var offset: CGFloat = GridView.cellSize * multiflier
             if i % 2 == 1 { offset = offset * -1 }
             
             context?.move(to: CGPoint(x: 0, y: rect.size.height / 2 + offset))

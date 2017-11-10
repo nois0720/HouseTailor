@@ -150,6 +150,8 @@ class TwoFingerGesture: Gesture {
             // For looking down on the object (99% of all use cases), we need to subtract the angle.
             // To make rotation also work correctly when looking from below the object one would have to
             // flip the sign of the angle depending on whether the object is above or below the camera...
+            
+            print(initialObjectAngle - currentAngleToInitialFingerAngle)
             virtualObject.eulerAngles.y = initialObjectAngle - currentAngleToInitialFingerAngle
             lastUsedObject = virtualObject
         }
