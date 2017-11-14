@@ -163,24 +163,24 @@ class VirtualObjectManager {
 	
 	func translate(_ object: VirtualObject, in sceneView: ARSCNView, basedOn screenPos: CGPoint) {
 		DispatchQueue.main.async {
-            guard let ray = sceneView.rayFromScreenPos(screenPos),
-                let pointCloud = sceneView.session.currentFrame?.rawFeaturePoints else {
+//            guard let ray = sceneView.rayFromScreenPos(screenPos),
+//                let pointCloud = sceneView.session.currentFrame?.rawFeaturePoints else {
+//                return
+//            }
+//
+//            let hitPosition = self.verticalHitTest(ray: ray, pointCloud: pointCloud)
+//
+//            guard hitPosition == nil else {
+//                self.delegate?.virtualObjectManager(self, couldNotPlaceVerticalPlane: object)
+//                return
+//            }
+//
+            let result = self.worldPositionFromScreenPosition(screenPos, in: sceneView)
+
+            guard let newPosition = result.position else {
+                self.delegate?.virtualObjectManager(self, couldNotPlace: object)
                 return
             }
-            
-            let hitPosition = self.verticalHitTest(ray: ray, pointCloud: pointCloud)
-            
-            guard hitPosition == nil else {
-                self.delegate?.virtualObjectManager(self, couldNotPlaceVerticalPlane: object)
-                return
-            }
-            
-			let result = self.worldPositionFromScreenPosition(screenPos, in: sceneView)
-			
-			guard let newPosition = result.position else {
-				self.delegate?.virtualObjectManager(self, couldNotPlace: object)
-				return
-			}
 			
 			guard let cameraTransform = sceneView.session.currentFrame?.camera.transform else {
 				return
@@ -308,81 +308,18 @@ class VirtualObjectManager {
 		
 		return (distanceToUser, angleDegrees, object.scale.x)
 	}
-	
-    func verticalHitTest(ray: Ray, pointCloud: ARPointCloud) -> SCNVector3? {
-        var d: Float = 10.0
-        if ray.direction.z < 0 { d = d * -1 }
-        
-        // 카메라 원점으로부터 ray direction 방향벡터의 't'배 만큼 떨어진 평면
-        let t = -(ray.origin.x * ray.direction.x + ray.origin.y * ray.direction.y + ray.origin.z * ray.direction.z + d) / (ray.direction.x * ray.direction.x + ray.direction.y * ray.direction.y + ray.direction.z * ray.direction.z)
-
-        // 카메라 원점의 가상 평면으로의 정사영
-        let newOrigin = ray.direction * t + ray.origin
-
-        // 평면의 normal vector는 카메라가 보는 반대방향으로 형성
-        let planeNormalVector = ray.direction.normalized() * -1
-
-        let newDirY = planeNormalVector.cross(SCNVector3(1, 0, 0)).normalized()
-        let newDirX = newDirY.cross(planeNormalVector).normalized()
-        let newCoordinateSystem = CoordinateSystem2D(xAxis: newDirX, yAxis: newDirY)
-        let new2DOrigin = newCoordinateSystem.newPos(pos: newOrigin)
-        
-        let points = pointCloud.__points
-        var htFeatureVertexs: [HTFeatureVertex] = []
-
-        for i in 0...pointCloud.__count {
-            let feature = points.advanced(by: Int(i))
-            let featurePos = SCNVector3(feature.pointee)
-            
-            let t2 = -(featurePos.x * ray.direction.x + featurePos.y * ray.direction.y + featurePos.z * ray.direction.z + d) / (ray.direction.x * ray.direction.x + ray.direction.y * ray.direction.y + ray.direction.z * ray.direction.z)
-            
-            let newFeaturePos = (ray.direction * t2 + featurePos)
-            let new2DPos = newCoordinateSystem.newPos(pos: newFeaturePos)
-            
-            let vertex = Vertex(x: Double(new2DPos.x), y: Double(new2DPos.y))
-            let htFeatureVertex = HTFeatureVertex(vertex: vertex, originPosition: featurePos)
-            htFeatureVertexs.append(htFeatureVertex)
-        }
-        
-        htFeatureVertexs.sort {
-            return $0.vertex.distance(other: new2DOrigin) < $1.vertex.distance(other: new2DOrigin)
-        }
-        
-        guard htFeatureVertexs.count >= 3 else {
-            print("점의 갯수가 3개 이하입니다.")
-            return nil
-        }
-        
-        if htFeatureVertexs.count >= 30 + 3 {
-            htFeatureVertexs.removeLast(htFeatureVertexs.count - 30)
-        }
-        
-        let triangles = Delaunay.triangulate(htFeatureVertexs)
-        var dots: Float = 0
-        
-        triangles.forEach {
-            dots = dots + $0.dotWithYAxis()
-        }
-        
-        dots = dots / Float(triangles.count)
-        
-        guard abs(dots) < 0.1 else { return nil }
-        
-        let hitTestResult = ray.origin + (ray.direction * ray.direction.dot(htFeatureVertexs.first!.originPosition))
-        return hitTestResult
-    }
     
-	func worldPositionFromScreenPosition(_ position: CGPoint, in sceneView: ARSCNView) -> (position: float3?, planeAnchor: ARPlaneAnchor?, hitAPlane: Bool) {
+    func worldPositionFromScreenPosition(_ position: CGPoint, in sceneView: ARSCNView) -> (position: float3?, planeAnchor: ARPlaneAnchor?, hitAPlane: Bool) {
         
+        
+        var planeHitTestResults = sceneView.hitTest(position, types: .existingPlaneUsingExtent)
+        if let result = planeHitTestResults.first {
             
-		var planeHitTestResults = sceneView.hitTest(position, types: .existingPlaneUsingExtent)
-		if let result = planeHitTestResults.first {
-			
-			let planeHitTestPosition = result.worldTransform.translation
-			let planeAnchor = result.anchor
-			
-			return (planeHitTestPosition, planeAnchor as? ARPlaneAnchor, true)
-		}
+            let planeHitTestPosition = result.worldTransform.translation
+            let planeAnchor = result.anchor
+            
+            return (planeHitTestPosition, planeAnchor as? ARPlaneAnchor, true)
+        }
 
         planeHitTestResults = sceneView.hitTest(position, types: .estimatedHorizontalPlane)
 
@@ -405,7 +342,7 @@ class VirtualObjectManager {
         }
         
         return (nil, nil, false)
-	}
+    }
 }
 
 // MARK: - Delegate

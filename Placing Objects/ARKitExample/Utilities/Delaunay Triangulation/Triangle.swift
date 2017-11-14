@@ -33,5 +33,9 @@ public struct Triangle {
         
         return vec1.normalized().cross(vec2.normalized())
     }
+    
+    var center: SCNVector3 {
+        return (vertex1 + vertex2 + vertex3) / 3
+    }
 }
 

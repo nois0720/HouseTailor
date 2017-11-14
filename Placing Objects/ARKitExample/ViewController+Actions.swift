@@ -31,17 +31,6 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     
     // (+) 버튼
     @IBAction func chooseObject(_ button: UIButton) {
-//        guard let screenCenter = screenCenter,
-//            let ray = rayFromScreenPos(screenCenter),
-//            let pointCloud = session.currentFrame?.rawFeaturePoints else {
-//            return
-//        }
-        
-//        let hitPosition = virtualObjectManager.verticalHitTest(ray: ray, pointCloud: pointCloud)
-//
-//        if let _hitPosition = hitPosition {
-//            currentLine = Line(sceneView: sceneView, startNodePos: _hitPosition, rootNode: sceneView.scene.rootNode)
-//        }
         // Abort if we are about to load another object to avoid concurrent modifications of the scene.
         if isLoadingObject { return }
         
@@ -59,7 +48,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         case .loadFloorPlan:
             let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
             guard let result = planeHitTestResults.first else { return }
-            
+
             let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
             
             let sphere = SCNSphere(radius: 0.5)
@@ -236,19 +225,18 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
     }
     
     private func startMeasuring() {
-//        guard let screenCenter = screenCenter,
-//            let ray = rayFromScreenPos(screenCenter),
-//            let pointCloud = session.currentFrame?.rawFeaturePoints else {
-//                return
-//        }
-//
-//        let hitPosition = virtualObjectManager.verticalHitTest(ray: ray, pointCloud: pointCloud)
-//
-//        if let _hitPosition = hitPosition {
-//            currentLine = Line(sceneView: sceneView, startNodePos: _hitPosition, rootNode: sceneView.scene.rootNode)
-//            isMeasuring = true
-//        }
+        guard let screenCenter = screenCenter else {
+            return
+        }
+
+        let resultPos = sceneView.hitTestToVerticalPlane(at: screenCenter)
+        guard let hitPos = resultPos else {
+            return
+        }
         
+        currentLine = Line(sceneView: sceneView, startNodePos: hitPos, rootNode: sceneView.scene.rootNode)
+        isMeasuring = true
+        return
         
         let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
 

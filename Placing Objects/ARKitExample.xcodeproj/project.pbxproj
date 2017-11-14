@@ -37,6 +37,7 @@
 		E583FFAA1FA6F89E00067667 /* VirtualObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = E583FFA91FA6F89E00067667 /* VirtualObject.swift */; };
 		E5A1B9DB1FB583A40026539E /* VerticalPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1B9DA1FB583A40026539E /* VerticalPlane.swift */; };
 		E5A1B9DD1FB588E90026539E /* VerticalPlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1B9DC1FB588E90026539E /* VerticalPlaneDetector.swift */; };
+		E5A5DF9F1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A5DF9E1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift */; };
 		E5A7764A1FA046F5008DD45A /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A776491FA046F5008DD45A /* Mode.swift */; };
 		E5A7764C1FA05D18008DD45A /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A7764B1FA05D18008DD45A /* GridView.swift */; };
 		E5A782C61F96EA9A003C87BB /* ModeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */; };
@@ -93,6 +94,7 @@
 		E583FFA91FA6F89E00067667 /* VirtualObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VirtualObject.swift; path = ARKitExample/VirtualObject.swift; sourceTree = SOURCE_ROOT; };
 		E5A1B9DA1FB583A40026539E /* VerticalPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPlane.swift; sourceTree = "<group>"; };
 		E5A1B9DC1FB588E90026539E /* VerticalPlaneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPlaneDetector.swift; sourceTree = "<group>"; };
+		E5A5DF9E1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+VerticalPlaneDetectorDelegate.swift"; sourceTree = "<group>"; };
 		E5A776491FA046F5008DD45A /* Mode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
 		E5A7764B1FA05D18008DD45A /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		E5A782C51F96EA9A003C87BB /* ModeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectionViewController.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				147D76491EFC36070000FEBF /* ViewController+ObjectSelection.swift */,
 				E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */,
 				E5C1CFAF1FA97FB3006358EA /* ViewController+Load3DFloorPlanDelegate.swift */,
+				E5A5DF9E1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift */,
 				1488324B1EFC3EBF0043E0AB /* Additional View Controllers */,
 				E5A782C91F971EBA003C87BB /* ARObjects */,
 				113B64D01ECA81CA0071CBD1 /* UI Elements */,
@@ -408,6 +411,7 @@
 				E5EF071E1FB28EC20003AA1C /* Delaunay.swift in Sources */,
 				C46356671EF9CC500080C8D9 /* SceneExtensions.swift in Sources */,
 				E5C1CFB01FA97FB3006358EA /* ViewController+Load3DFloorPlanDelegate.swift in Sources */,
+				E5A5DF9F1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift in Sources */,
 				E5EF071C1FB28E810003AA1C /* Edge.swift in Sources */,
 				148832491EFC3E520043E0AB /* ARSCNViewExtensions.swift in Sources */,
 				E5EF07201FB290150003AA1C /* HashFunction.swift in Sources */,

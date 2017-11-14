@@ -14,12 +14,10 @@ class CylinderLine: SCNNode {
     {
         super.init()
         
-        
         let height = distance(startPos: v1, endPos: v2)
         position = v1
         let nodeV2 = SCNNode()
         nodeV2.position = v2
-        parent.addChildNode(nodeV2)
         
         let zAlign = SCNNode()
         zAlign.eulerAngles.x = Float(CGFloat.pi / 2)
@@ -28,8 +26,8 @@ class CylinderLine: SCNNode {
         cyl.radialSegmentCount = radSegmentCount
         cyl.firstMaterial?.diffuse.contents = color
         
-        let nodeCyl = SCNNode(geometry: cyl )
-        nodeCyl.position.y = -height/2
+        let nodeCyl = SCNNode(geometry: cyl)
+        nodeCyl.position.y = -height / 2
         zAlign.addChildNode(nodeCyl)
         
         addChildNode(zAlign)
@@ -62,7 +60,6 @@ class Line: SCNNode {
     
     private let sceneView: ARSCNView!
     private let rootNode: SCNNode!
-    
     
     init(sceneView: ARSCNView, startNodePos: SCNVector3, rootNode: SCNNode) {
         self.sceneView = sceneView
@@ -114,25 +111,25 @@ class Line: SCNNode {
     }
     
     func update(to vector: SCNVector3) {
+        lineNode?.removeFromParentNode()
+
         lenText.string = String(format: "%.2f m", distance(startPos: startNodePos(), endPos: vector))
         lenTextNode.position = SCNVector3((startNodePos().x + vector.x) / 2.0,
                                           (startNodePos().y + vector.y) / 2.0,
                                           (startNodePos().z + vector.z) / 2.0)
         
         if endNode.parent == nil {
-            rootNode.addChildNode(endNode)
+            self.addChildNode(endNode)
         }
         endNode.position = vector
-        
-        lineNode?.removeFromParentNode()
-        lineNode = CylinderLine(parent: rootNode,
+        lineNode = CylinderLine(parent: self,
                                 v1: startNodePos(),
                                 v2: vector,
                                 radius: 0.002,
                                 radSegmentCount: 16,
                                 color: UIColor.white)
         
-        rootNode.addChildNode(lineNode!)
+        self.addChildNode(lineNode!)
     }
     
     func delete() {
@@ -182,11 +179,11 @@ class Line: SCNNode {
         lineNode?.categoryBitMask = number
     }
     
-    override func removeFromParentNode() {
-        startNode.removeFromParentNode()
-        lineNode?.removeFromParentNode()
-        endNode.removeFromParentNode()
-        lenTextNode.removeFromParentNode()
-        super.removeFromParentNode()
-    }
+//    override func removeFromParentNode() {
+//        startNode.removeFromParentNode()
+//        lineNode?.removeFromParentNode()
+//        endNode.removeFromParentNode()
+//        lenTextNode.removeFromParentNode()
+//        super.removeFromParentNode()
+//    }
 }

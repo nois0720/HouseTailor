@@ -6,16 +6,17 @@
 //  Copyright © 2017년 Apple. All rights reserved.
 //
 
+import ARKit
 import Foundation
 
 struct Edge {
-    let vertex1: Vertex
-    let vertex2: Vertex
+    let vertex1: HTFeatureVertex
+    let vertex2: HTFeatureVertex
 }
 
 extension Edge: Equatable {
     static func ==(lhs: Edge, rhs: Edge) -> Bool {
-        return (lhs.vertex1 == rhs.vertex1 && lhs.vertex2 == rhs.vertex2) ||
-            (lhs.vertex1 == rhs.vertex2 && lhs.vertex2 == rhs.vertex1)
+        return (lhs.vertex1.vertex == rhs.vertex1.vertex && lhs.vertex2.vertex == rhs.vertex2.vertex) ||
+            (lhs.vertex1.vertex == rhs.vertex2.vertex && lhs.vertex2.vertex == rhs.vertex1.vertex)
     }
 }

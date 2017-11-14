@@ -25,4 +25,8 @@ class CoordinateSystem2D {
         return Vertex(x: Double(newX), y: Double(newY))
     }
     
+    func originPos(vertex: Vertex) -> SCNVector3 {
+        return xAxis * Float(vertex.x) + yAxis * Float(vertex.y)
+    }
+    
 }

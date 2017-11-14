@@ -9,10 +9,12 @@
 import ARKit
 
 class HTFeatureVertex {
+    var distToPlane: Float
     var vertex: Vertex
     var originPosition: SCNVector3
     
-    init(vertex: Vertex, originPosition: SCNVector3 = SCNVector3(0, 0, 0)) {
+    init(distToPlane: Float, vertex: Vertex, originPosition: SCNVector3 = SCNVector3(0, 0, 0)) {
+        self.distToPlane = distToPlane
         self.vertex = vertex
         self.originPosition = originPosition
     }

@@ -36,9 +36,10 @@ class Delaunay {
         let v3 = Vertex(x: xmid + 20 * dmax, y: ymid - dmax)
         
         return [
-            HTFeatureVertex(vertex: v1),
-            HTFeatureVertex(vertex: v2),
-            HTFeatureVertex(vertex: v3),
+            //TODO : distToPlane 안쓰는 값 처리
+            HTFeatureVertex(distToPlane: -1, vertex: v1),
+            HTFeatureVertex(distToPlane: -1, vertex: v2),
+            HTFeatureVertex(distToPlane: -1, vertex: v3),
         ]
     }
     
@@ -91,35 +92,31 @@ class Delaunay {
         return Circumcircle(HTVertex1: i, HTVertex2: j, HTVertex3: k, x: xc, y: yc, rsqr: rsqr)
     }
     
-    fileprivate class func dedup(_ edges: [HTFeatureVertex]) -> [HTFeatureVertex] {
+    fileprivate class func dedup(_ edges: [Edge]) -> [Edge] {
         
-        var e = edges
-        var a: HTFeatureVertex?, b: HTFeatureVertex?, m: HTFeatureVertex?, n: HTFeatureVertex?
+        var resultEdges = edges
+        var e1: Edge?
+        var e2: Edge?
         
-        var j = e.count
+        var j = resultEdges.count
         while j > 0 {
             j -= 1
-            b = j < e.count ? e[j] : nil
-            j -= 1
-            a = j < e.count ? e[j] : nil
+            e1 = j < resultEdges.count ? resultEdges[j] : nil
             
             var i = j
             while i > 0 {
                 i -= 1
-                n = e[i]
-                i -= 1
-                m = e[i]
+                e2 = resultEdges[i]
                 
-                if (a?.vertex == m?.vertex && b?.vertex == n?.vertex) ||
-                    (a?.vertex == n?.vertex && b?.vertex == m?.vertex) {
-                    e.removeSubrange(j...j + 1)
-                    e.removeSubrange(i...i + 1)
+                if let lhs = e1, let rhs = e2, lhs == rhs {
+                    resultEdges.remove(at: j)
+                    resultEdges.remove(at: i)
                     break
                 }
             }
         }
         
-        return e
+        return resultEdges
     }
     
     class func triangulate(_ vertices: [HTFeatureVertex]) -> [Triangle] {
@@ -129,7 +126,7 @@ class Delaunay {
         let n = vertices.count
         var open = [Circumcircle]()
         var completed = [Circumcircle]()
-        var edges = [HTFeatureVertex]()
+        var edges = [Edge]()
         
         /* vertex array를 x좌표 순으로 정렬한다. */
         var _vertices = vertices.sorted { $0.vertex.x < $1.vertex.x }
@@ -172,9 +169,9 @@ class Delaunay {
 
                 /* triangle을 삭제하고, 삼각형의 edge들을 edge list에 추가한다. */
                 edges += [
-                    open[j].HTVertex1, open[j].HTVertex2,
-                    open[j].HTVertex2, open[j].HTVertex3,
-                    open[j].HTVertex3, open[j].HTVertex1
+                    Edge(vertex1: open[j].HTVertex1, vertex2: open[j].HTVertex2),
+                    Edge(vertex1: open[j].HTVertex2, vertex2: open[j].HTVertex3),
+                    Edge(vertex1: open[j].HTVertex3, vertex2: open[j].HTVertex1)
                 ]
 
                 open.remove(at: j)
@@ -183,15 +180,10 @@ class Delaunay {
             /* 중복되는 edge가 있으면, 해당 edge를 제거한다.
              * 중복된다는 것은 공유를 의미한다. */
             edges = dedup(edges)
+            
             /* 각각의 edge에 대해 새로운 triangle을 추가한다 */
-            var j = edges.count
-            while j > 0 {
-
-                j -= 1
-                let b = edges[j]
-                j -= 1
-                let a = edges[j]
-                open.append(circumcircle(i: a, j: b, k: _vertices[i]))
+            edges.forEach {
+                open.append(circumcircle(i: $0.vertex1, j: $0.vertex2, k: _vertices[i]))
             }
         }
 
@@ -214,32 +206,6 @@ class Delaunay {
         }
         
         return results
-        
-//        let _results = results.filter {
-//            let vec1 = $0.vertex2 - $0.vertex1
-//            let vec2 = $0.vertex3 - $0.vertex1
-//
-//            let normVec = vec1.normalized().cross(vec2.normalized())
-//            let dot = normVec.normalized().dot(SCNVector3(0, 1, 0))
-//
-//            return abs(dot) < 0.15
-//        }
-//
-//        _results.forEach {
-//            let vec1 = $0.vertex2 - $0.vertex1
-//            let vec2 = $0.vertex3 - $0.vertex1
-//
-//            let v11 = $0.vertex1
-//            let v12 = $0.vertex2
-//            let v13 = $0.vertex3
-//
-//            let normVec = vec1.normalized().cross(vec2.normalized())
-//            let dot = normVec.normalized().dot(SCNVector3(0, 1, 0))
-//
-//        }
-//
-//        // (0, 1, 0)과의 dot product의 절대값이 0.2 이하? 수직이지 않을까
-//        return _results
     }
     
 }

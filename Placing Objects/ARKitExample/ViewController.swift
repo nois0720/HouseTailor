@@ -51,6 +51,10 @@ class ViewController: UIViewController {
     var firstPoint = SCNVector3(0, 0, 0)
     var rootFPNode = SCNNode()
     
+    // MARK: VerticalPlane Detection
+    
+    var verticalPlaneDetector: VerticalPlaneDetector!
+    
     // MARK: - Virtual Object Manipulation Properties
     
     var virtualObjectManager: VirtualObjectManager!
@@ -151,6 +155,8 @@ class ViewController: UIViewController {
         virtualObjectManager = VirtualObjectManager(updateQueue: updateQueue)
         virtualObjectManager.delegate = self
 		
+        verticalPlaneDetector = VerticalPlaneDetector(sceneView: sceneView)
+        verticalPlaneDetector.delegate = self
 		// set up scene view
 		sceneView.setup()
 		sceneView.delegate = self
@@ -158,7 +164,7 @@ class ViewController: UIViewController {
         
         sceneView.scene.rootNode.addChildNode(dtRootNode)
         /* debuging options */
-         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+//         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         // sceneView.showsStatistics = true
 		
 		sceneView.scene.enableEnvironmentMapWithIntensity(25)
