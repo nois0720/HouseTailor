@@ -42,7 +42,7 @@ extension ARSCNView {
         return Ray(origin: cameraPos, direction: rayDirection)
     }
     
-    func hitTestToVerticalPlane(at point: CGPoint) -> SCNVector3? {
+    func hitTestToVerticalPlane(at point: CGPoint) -> VerticalPlane? {
         func isVerticalPlane(_ node: SCNNode) -> VerticalPlane? {
             if let verticalPlane = node as? VerticalPlane { return verticalPlane }
             if node.parent != nil { return isVerticalPlane(node.parent!) }
@@ -51,27 +51,11 @@ extension ARSCNView {
         }
         
         let hitTestResults: [SCNHitTestResult] = hitTest(point, options: [:])
-        let verticalPlaneOptional = hitTestResults.lazy.flatMap { result in
+        let verticalPlane = hitTestResults.lazy.flatMap { result in
            isVerticalPlane(result.node)
-        }
+        }.first
         
-        guard let verticalPlane = verticalPlaneOptional.first,
-            let ray = rayFromScreenPos(point) else { return nil }
-        
-        let d = -(verticalPlane.normal.x * verticalPlane.center.x +
-                    verticalPlane.normal.y * verticalPlane.center.y +
-                    verticalPlane.normal.z * verticalPlane.center.z)
-        
-        let numerator = -(verticalPlane.normal.x * ray.origin.x +
-                        verticalPlane.normal.y * ray.origin.y +
-                        verticalPlane.normal.z * ray.origin.z + d)
-        let denominator = (verticalPlane.normal.x * ray.direction.x +
-                        verticalPlane.normal.y * ray.direction.y +
-                        verticalPlane.normal.z * ray.direction.z)
-        
-        let t = numerator / denominator
-        
-        return ray.origin + ray.direction * t
+        return verticalPlane
     }
     
 //

@@ -112,7 +112,8 @@ class ViewController: UIViewController {
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		
+        UIApplication.shared.isIdleTimerDisabled = true
+
 		if ARWorldTrackingConfiguration.isSupported {
 			// Start the ARSession.
 			resetTracking()

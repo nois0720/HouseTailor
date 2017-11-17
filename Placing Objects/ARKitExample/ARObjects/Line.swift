@@ -61,9 +61,12 @@ class Line: SCNNode {
     private let sceneView: ARSCNView!
     private let rootNode: SCNNode!
     
-    init(sceneView: ARSCNView, startNodePos: SCNVector3, rootNode: SCNNode) {
+    private let verticalPlane: VerticalPlane?
+    
+    init(sceneView: ARSCNView, startNodePos: SCNVector3, rootNode: SCNNode, verticalPlane: VerticalPlane? = nil) {
         self.sceneView = sceneView
         self.rootNode = rootNode
+        self.verticalPlane = verticalPlane
         
         let sphere = SCNSphere(radius: 0.5)
         sphere.firstMaterial?.diffuse.contents = nodeColor
@@ -108,6 +111,16 @@ class Line: SCNNode {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func updateWithLinesPlane(at point: CGPoint) -> Bool {
+        
+        guard let verticalPlane = self.verticalPlane,
+            let ray = sceneView.rayFromScreenPos(point) else { return false }
+        
+        let intersectionPos = ray.intersectionPosition(with: verticalPlane)
+        update(to: intersectionPos)
+        return true
     }
     
     func update(to vector: SCNVector3) {
@@ -178,12 +191,4 @@ class Line: SCNNode {
     func setCategory(number: Int) {
         lineNode?.categoryBitMask = number
     }
-    
-//    override func removeFromParentNode() {
-//        startNode.removeFromParentNode()
-//        lineNode?.removeFromParentNode()
-//        endNode.removeFromParentNode()
-//        lenTextNode.removeFromParentNode()
-//        super.removeFromParentNode()
-//    }
 }

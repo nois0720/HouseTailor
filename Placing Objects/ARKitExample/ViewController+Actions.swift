@@ -228,15 +228,18 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
         guard let screenCenter = screenCenter else {
             return
         }
-
-        let resultPos = sceneView.hitTestToVerticalPlane(at: screenCenter)
-        guard let hitPos = resultPos else {
+        
+        if let verticalPlane = sceneView.hitTestToVerticalPlane(at: screenCenter),
+            let ray = sceneView.rayFromScreenPos(screenCenter) {
+            let startPos = ray.intersectionPosition(with: verticalPlane)
+            currentLine = Line(sceneView: sceneView,
+                               startNodePos: startPos,
+                               rootNode: sceneView.scene.rootNode,
+                               verticalPlane: verticalPlane)
+            isMeasuring = true
+            // vertical only for test
             return
         }
-        
-        currentLine = Line(sceneView: sceneView, startNodePos: hitPos, rootNode: sceneView.scene.rootNode)
-        isMeasuring = true
-        return
         
         let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
 

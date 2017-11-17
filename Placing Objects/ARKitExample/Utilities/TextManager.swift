@@ -92,6 +92,7 @@ class TextManager {
 				// long. So 1000 characters per minute / 60 = 15 characters per second.
 				// We limit the duration to a range of 1-10 seconds.
                 let charCount = text.characters.count
+                
 				let displayDuration: TimeInterval = min(10, Double(charCount) / 15.0 + 1.0)
 				self.messageHideTimer =
                     Timer.scheduledTimer(withTimeInterval: displayDuration,

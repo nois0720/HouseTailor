@@ -11,15 +11,12 @@ import ARKit
 class VerticalPlane: SCNNode {
     
     // MARK: - Properties
-    
-    var center: SCNVector3
     var normal: SCNVector3
     var boundary: (width: Float, height: Float)
     
     // MARK: - Initialization
     
-    init(center: SCNVector3, normal: SCNVector3, boundary: (width: Float, height: Float)) {
-        self.center = center
+    init(position: SCNVector3, normal: SCNVector3, boundary: (width: Float, height: Float)) {
         self.normal = normal
         self.boundary = boundary
         
@@ -27,8 +24,10 @@ class VerticalPlane: SCNNode {
         
         self.geometry = SCNPlane(width: CGFloat(self.boundary.width), height: CGFloat(self.boundary.height))
         self.geometry?.firstMaterial?.diffuse.contents =  UIColor(red: CGFloat(arc4random()) / CGFloat(UINT32_MAX), green: CGFloat(arc4random()) / CGFloat(UINT32_MAX), blue: CGFloat(arc4random()) / CGFloat(UINT32_MAX), alpha: 0.5)
+        self.geometry?.firstMaterial?.isDoubleSided = true
+        
         self.look(at: normal)
-        self.position = center
+        self.position = position
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,16 +44,53 @@ class VerticalPlane: SCNNode {
         guard self.normal.dot(other.normal) > 0.95 else { return false }
         
         // self: aX + bY + cZ + d = 0
-        let d = -(normal.x * center.x + normal.y * center.y + normal.z * center.z)
-        let dist = abs(normal.x * other.center.x + normal.y * other.center.y + normal.z * other.center.z + d) / sqrtf(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z)
+        let d = -(normal.x * position.x + normal.y * position.y + normal.z * position.z)
         
-        guard dist < 0.1 else { return false }
+        // 두 평면사이의 거리
+        let dist = abs(normal.x * other.position.x + normal.y * other.position.y + normal.z * other.position.z + d) / sqrtf(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z)
+        
+        guard dist < 0.05 else { return false }
 //        guard distance(startPos: self.center, endPos: other.center) < 0.1 else { return false }
         
         return true
     }
     
     func updatePlane(other: VerticalPlane) {
+//        return
+        let dist = self.position - other.position
+        let deltaHeight = abs(dist.y)
+        let deltaWidth = sqrtf(dist.length() * dist.length() - deltaHeight * deltaHeight)
+        let newBoundary = ((self.boundary.width + other.boundary.width) / 2 + deltaWidth,
+                           (self.boundary.height + other.boundary.height) / 2 + deltaHeight)
+        
+        // check no intersection
+        if newBoundary.0 < self.boundary.width || newBoundary.0 < other.boundary.width { return }
+        if newBoundary.1 < self.boundary.height || newBoundary.1 < other.boundary.height { return }
+        
+        var t: Float = 0
+        
+        if other.boundary.width - self.boundary.width > 0 {
+            t = self.boundary.width / (self.boundary.width + other.boundary.width)
+        } else {
+            t = other.boundary.width / (self.boundary.width + other.boundary.width)
+        }
+        
+//        print(self.boundary)
+//        print(other.boundary)
+//        print(newBoundary)
+        
+        let newPosition = self.position + dist * -t
+        let newNormal = (self.normal + other.normal).normalized()
+
+//        print(self.position)
+//        print(other.position)
+//        print(newPosition)
+
+        self.geometry = SCNPlane(width: CGFloat(newBoundary.0), height: CGFloat(newBoundary.1))
+        self.position = newPosition
+        self.normal = newNormal
+        self.geometry?.firstMaterial?.diffuse.contents =  UIColor(red: CGFloat(arc4random()) / CGFloat(UINT32_MAX), green: CGFloat(arc4random()) / CGFloat(UINT32_MAX), blue: CGFloat(arc4random()) / CGFloat(UINT32_MAX), alpha: 0.5)
+        self.geometry?.firstMaterial?.isDoubleSided = true
 //        let newCenter = (self.center + other.center) / 2
 //        let newBoundary = ((self.boundary.width + other.boundary.width) / 2,
 //                           (self.boundary.height + other.boundary.height) / 2)
@@ -62,8 +98,6 @@ class VerticalPlane: SCNNode {
 //
 //        self.center = newCenter
 //        self.boundary = newBoundary
-//        self.geometry = SCNPlane(width: CGFloat(self.boundary.width), height: CGFloat(self.boundary.height))
-//        self.geometry?.firstMaterial?.diffuse.contents =  UIColor(red: CGFloat(arc4random()) / CGFloat(UINT32_MAX), green: CGFloat(arc4random()) / CGFloat(UINT32_MAX), blue: CGFloat(arc4random()) / CGFloat(UINT32_MAX), alpha: 0.5)
 //        self.normal = newNormal
     }
 }

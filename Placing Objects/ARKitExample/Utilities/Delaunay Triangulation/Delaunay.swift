@@ -207,5 +207,5 @@ class Delaunay {
         
         return results
     }
-    
+
 }

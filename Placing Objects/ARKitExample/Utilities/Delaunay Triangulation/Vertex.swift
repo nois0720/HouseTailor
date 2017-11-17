@@ -6,6 +6,7 @@
 //  Copyright © 2017년 Apple. All rights reserved.
 //
 
+import SceneKit
 import CoreGraphics
 
 public struct Vertex {
@@ -43,6 +44,13 @@ extension Array where Element:Equatable {
         return result
     }
 }
+
+extension SCNVector3: Equatable {
+    static public func ==(lhs: SCNVector3, rhs: SCNVector3) -> Bool {
+        return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
+    }
+}
+
 
 extension Vertex: Hashable {
     public var hashValue: Int {

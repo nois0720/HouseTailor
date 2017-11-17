@@ -19,45 +19,74 @@ class VerticalPlaneDetector {
         self.sceneView = sceneView
     }
     
-    func detectVerticalPlane(point: CGPoint) {
+    func detectVerticalPlane(point: CGPoint) -> Float? {
         
-        if let verticalPlane = getVerticalPlane(point: point) {
-            
-            // check is exist already
-            var isUpdate = false
-            
-            // TODO: 유사도 정의
-            // 생성하려는 위치에 이미 '유사도가 높은' 평면이 있다면, 해당 평면 업데이트.
-            verticalPlanes.forEach {
-                // center
-                if $0.similarity(other: verticalPlane) {
-                    $0.updatePlane(other: verticalPlane)
-                    delegate?.verticalPlaneDetector(didUpdate: $0)
-                    isUpdate = true
-                }
-            }
-            
-            if isUpdate { return }
-            
-            // 새로운 vertical plane 생성
-            sceneView.scene.rootNode.addChildNode(verticalPlane)
-            verticalPlanes.append(verticalPlane)
-            delegate?.verticalPlaneDetector(didAdd: verticalPlane)
+        guard let (verticalPlane, triangles) = getVerticalPlane(point: point) else {
+            return nil
         }
+        
+//        guard let triangles = getVerticalPlane(point: point) else {
+//            return nil
+//        }
+//
+//        triangles.forEach {
+//            let color = UIColor(red: CGFloat(arc4random()) / CGFloat(UINT32_MAX), green: CGFloat(arc4random()) / CGFloat(UINT32_MAX), blue: CGFloat(arc4random()) / CGFloat(UINT32_MAX), alpha: 0.5)
+//            let triangleNode = polygonSCNNode(vertices: [$0.vertex1, $0.vertex2, $0.vertex3], color: color)
+//            sceneView.scene.rootNode.addChildNode(triangleNode)
+//
+//        }
+//
+//        return nil
+        
+        
+        // TODO: 모서리에 생성된 면을 사용해도 될지 말지 결정.
+        var errorRate:Float = 0
+        var count = 0
+        triangles.forEach {
+            if $0.normal.dot(verticalPlane.normal) < 0.8 { count = count + 1 }
+        }
+        errorRate = Float(count) / Float(triangles.count)
+        
+        guard errorRate < 0.45 else {
+            return errorRate
+        }
+        
+        var isUpdate = false
+        
+        // TODO: 유사도 정의
+        // 생성하려는 위치에 이미 '유사도가 높은' 평면이 있다면, 해당 평면 업데이트.
+        verticalPlanes.forEach {
+            // center
+            if $0.similarity(other: verticalPlane) {
+                $0.updatePlane(other: verticalPlane)
+                delegate?.verticalPlaneDetector(didUpdate: $0)
+                isUpdate = true
+            }
+        }
+        
+        if isUpdate { return nil }
+        
+        // 새로운 vertical plane 생성
+        sceneView.scene.rootNode.addChildNode(verticalPlane)
+        verticalPlanes.append(verticalPlane)
+        delegate?.verticalPlaneDetector(didAdd: verticalPlane)
+        
+        return errorRate
     }
     
-    private func getVerticalPlane(point: CGPoint, maxCount: Int = 30) -> VerticalPlane? {
+//    private func getVerticalPlane(point: CGPoint, maxCount: Int = 60) -> [Triangle]? {
+    private func getVerticalPlane(point: CGPoint, maxCount: Int = 60) -> (VerticalPlane, [Triangle])? {
 
         guard let ray = sceneView.rayFromScreenPos(point),
             let features = sceneView.session.currentFrame?.rawFeaturePoints else {
                 return nil
         }
         
-//        // 카메라 원점으로부터 ray direction방향에 있는 ProjectionPlane까지 t 미터 떨어져있다.
-//        let t = distanceToProjectionPlane(ray: ray, from: ray.origin)
-//
-//        // 카메라 원점의 가상 평면으로의 정사영
-//        let newOrigin = ray.direction * t + ray.origin
+        // 카메라 원점으로부터 ray direction방향에 있는 ProjectionPlane까지 t 미터 떨어져있다.
+        let t = distanceToProjectionPlane(ray: ray, from: ray.origin)
+
+        // 카메라 원점의 가상 평면으로의 정사영
+        let newOrigin = ray.direction * t + ray.origin
         
         // 평면의 normal vector는 카메라가 보는 반대방향으로 형성
         let planeNormalVector = ray.direction.normalized() * -1
@@ -108,38 +137,43 @@ class VerticalPlaneDetector {
             return delta < 0.10
         }
 
+        let new2DOrigin = newCoordinateSystem.newPos(pos: newOrigin)
+
+        // new2DOrigin에서 가까운 순서로 정렬
+        htFeatureVertexs.sort {
+            return $0.vertex.distance(other: new2DOrigin) < $1.vertex.distance(other: new2DOrigin)
+        }
+        
+        // 앞에서부터 maxcount만큼 남기기
+        if htFeatureVertexs.count >= maxCount + 3 {
+            htFeatureVertexs.removeLast(htFeatureVertexs.count - maxCount)
+        }
+        
         // 점의 개수가 너무 적은 경우, triangle을 만들지 않음.
         guard htFeatureVertexs.count > 10 else { return nil }
-        
-        let boundary = boundaryRect(htFeatureVertexs: htFeatureVertexs, coordinateSystem: newCoordinateSystem)
-        let triangles = Delaunay.triangulate(htFeatureVertexs)
 
-//        let new2DOrigin = newCoordinateSystem.newPos(pos: newOrigin)
-//
-//        // new2DOrigin에서 가까운 순서로 정렬
-//        htFeatureVertexs.sort {
-//            return $0.vertex.distance(other: new2DOrigin) < $1.vertex.distance(other: new2DOrigin)
-//        }
-//
-//        // 앞에서부터 maxcount만큼 남기기 (maxcount의 기본값: 30)
-//        if htFeatureVertexs.count >= maxCount + 3 {
-//            htFeatureVertexs.removeLast(htFeatureVertexs.count - maxCount)
-//        }
+        //        let triangles = Delaunay.triangulate(htFeatureVertexs)
+        let boundary = boundaryRect(htFeatureVertexs: htFeatureVertexs, coordinateSystem: newCoordinateSystem)
+        let triangles = DCDelaunay.triangulateDivideAndConquer(htFeatureVertexs)
         
-        return verticalPlaneFromTriangles(triangles: triangles, boundary: boundary)
+        guard let verticalPlane = verticalPlaneFromTriangles(triangles: triangles, boundary: boundary) else {
+            return nil
+        }
+
+        return (verticalPlane, triangles)
     }
     
     private func verticalPlaneFromTriangles(triangles: [Triangle], boundary: (width: Float, height: Float)) -> VerticalPlane? {
         var avgNormal = SCNVector3Zero
-        var center = SCNVector3Zero
+        var position = SCNVector3Zero
         
         triangles.forEach {
             avgNormal = avgNormal + $0.normal
-            center = center + $0.center
+            position = position + $0.center
         }
         
         avgNormal /= Float(triangles.count)
-        center /= Float(triangles.count)
+        position /= Float(triangles.count)
         avgNormal.normalize()
         
         let dot = abs(avgNormal.dot(SCNVector3(0, 1, 0)))
@@ -149,7 +183,7 @@ class VerticalPlaneDetector {
         avgNormal.y = 0
         avgNormal.normalize()
         
-        let verticalPlane = VerticalPlane(center: center,
+        let verticalPlane = VerticalPlane(position: position,
                                           normal: avgNormal,
                                           boundary: boundary)
         

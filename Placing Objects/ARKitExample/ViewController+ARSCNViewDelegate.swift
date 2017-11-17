@@ -20,33 +20,36 @@ extension ViewController: ARSCNViewDelegate {
     }
     
     @objc func verticalDetect() {
-        guard let screenCenter = screenCenter else { return }
-        
-        verticalPlaneDetector.detectVerticalPlane(point: screenCenter)
+        guard let cameraEulerX = sceneView.session.currentFrame?.camera.eulerAngles.x,
+            let screenCenter = screenCenter,
+            abs(cameraEulerX) < 0.9 else { return }
+
+        DispatchQueue.global().async {
+            guard let error = self.verticalPlaneDetector.detectVerticalPlane(point: screenCenter) else {
+                return
+            }
+        }
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         updateFocusSquare()
-        
+
         if mode == Mode.loadFloorPlan {
             textManager.showMessage("\(selectCount)번째 좌표를 찍어주세요", autoHide: true)
             return
         }
         
         if isMeasuring {
-            guard let hitPosition = sceneView.hitTestToVerticalPlane(at: self.screenCenter!) else {
+            guard self.currentLine?.updateWithLinesPlane(at: self.screenCenter!) == false else {
                 return
             }
             
+            let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
+            guard let result = planeHitTestResults.first else { return }
+
+            let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+
             self.currentLine?.update(to: hitPosition)
-            
-//
-//            let planeHitTestResults = self.sceneView.hitTest(self.screenCenter!, types: .existingPlane)
-//            guard let result = planeHitTestResults.first else { return }
-//
-//            let hitPosition2 = SCNVector3.positionFromTransform(result.worldTransform)
-//
-//            self.currentLine?.update(to: hitPosition2)
         }
         
         if isMeasuringFP {

@@ -35,6 +35,7 @@
 		E580F1AE1FA2185700A69AC7 /* VirtualObjectFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = E580F1AD1FA2185700A69AC7 /* VirtualObjectFrame.swift */; };
 		E583FFA81FA6EA2F00067667 /* SCNVector3+CodableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E583FFA71FA6EA2F00067667 /* SCNVector3+CodableExtension.swift */; };
 		E583FFAA1FA6F89E00067667 /* VirtualObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = E583FFA91FA6F89E00067667 /* VirtualObject.swift */; };
+		E58E8B5E1FBD3318005A2149 /* DivideConquerDelaunay.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58E8B5D1FBD3318005A2149 /* DivideConquerDelaunay.swift */; };
 		E5A1B9DB1FB583A40026539E /* VerticalPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1B9DA1FB583A40026539E /* VerticalPlane.swift */; };
 		E5A1B9DD1FB588E90026539E /* VerticalPlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1B9DC1FB588E90026539E /* VerticalPlaneDetector.swift */; };
 		E5A5DF9F1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A5DF9E1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift */; };
@@ -92,6 +93,7 @@
 		E580F1AD1FA2185700A69AC7 /* VirtualObjectFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectFrame.swift; sourceTree = "<group>"; };
 		E583FFA71FA6EA2F00067667 /* SCNVector3+CodableExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector3+CodableExtension.swift"; sourceTree = "<group>"; };
 		E583FFA91FA6F89E00067667 /* VirtualObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VirtualObject.swift; path = ARKitExample/VirtualObject.swift; sourceTree = SOURCE_ROOT; };
+		E58E8B5D1FBD3318005A2149 /* DivideConquerDelaunay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DivideConquerDelaunay.swift; sourceTree = "<group>"; };
 		E5A1B9DA1FB583A40026539E /* VerticalPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPlane.swift; sourceTree = "<group>"; };
 		E5A1B9DC1FB588E90026539E /* VerticalPlaneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPlaneDetector.swift; sourceTree = "<group>"; };
 		E5A5DF9E1FB9721C00E141C1 /* ViewController+VerticalPlaneDetectorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+VerticalPlaneDetectorDelegate.swift"; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				E5EF071D1FB28EC20003AA1C /* Delaunay.swift */,
 				E5EF071F1FB290150003AA1C /* HashFunction.swift */,
 				E5DDE70F1FB3F737008469F8 /* CoordinateSystem2D.swift */,
+				E58E8B5D1FBD3318005A2149 /* DivideConquerDelaunay.swift */,
 			);
 			path = "Delaunay Triangulation";
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				E5A1B9DB1FB583A40026539E /* VerticalPlane.swift in Sources */,
 				E5AA58491FA869EE00C8B25B /* FloorPlanDefinition.swift in Sources */,
 				147062641F06FA790003EE03 /* VirtualObjectSelectionViewController.swift in Sources */,
+				E58E8B5E1FBD3318005A2149 /* DivideConquerDelaunay.swift in Sources */,
 				E5DDE7101FB3F737008469F8 /* CoordinateSystem2D.swift in Sources */,
 				392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */,
 				148832451EFC3C160043E0AB /* TwoFingerGesture.swift in Sources */,

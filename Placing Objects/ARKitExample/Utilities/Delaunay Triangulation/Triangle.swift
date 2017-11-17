@@ -23,6 +23,31 @@ public struct Triangle {
         return normal.normalized().dot(SCNVector3(0, 1, 0))
     }
     
+    func isContain(edge: Edge) -> Bool {
+        
+        if self.vertex1 == edge.vertex1.originPosition {
+            if self.vertex2 == edge.vertex2.originPosition {
+                return true
+            } else if self.vertex3 == edge.vertex2.originPosition {
+                return true
+            }
+        } else if self.vertex2 == edge.vertex1.originPosition {
+            if self.vertex1 == edge.vertex2.originPosition {
+                return true
+            } else if self.vertex3 == edge.vertex2.originPosition {
+                return true
+            }
+        } else if self.vertex3 == edge.vertex1.originPosition {
+            if self.vertex1 == edge.vertex2.originPosition {
+                return true
+            } else if self.vertex2 == edge.vertex2.originPosition {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     public let vertex1: SCNVector3
     public let vertex2: SCNVector3
     public let vertex3: SCNVector3
@@ -31,7 +56,7 @@ public struct Triangle {
         let vec1 = self.vertex2 - self.vertex1
         let vec2 = self.vertex3 - self.vertex1
         
-        return vec1.normalized().cross(vec2.normalized())
+        return vec1.cross(vec2).normalized()
     }
     
     var center: SCNVector3 {
