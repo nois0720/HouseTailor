@@ -12,7 +12,12 @@ import ARKit
 /// A simple struct representing 3 vertices
 public struct Triangle {
     
-    public init(vertex1: SCNVector3, vertex2: SCNVector3, vertex3: SCNVector3) {
+    let vertex1: SCNVector3
+    let vertex2: SCNVector3
+    let vertex3: SCNVector3
+    
+    
+    init(vertex1: SCNVector3, vertex2: SCNVector3, vertex3: SCNVector3) {
         self.vertex1 = vertex1
         self.vertex2 = vertex2
         self.vertex3 = vertex3
@@ -47,10 +52,6 @@ public struct Triangle {
         
         return false
     }
-    
-    public let vertex1: SCNVector3
-    public let vertex2: SCNVector3
-    public let vertex3: SCNVector3
     
     var normal: SCNVector3 {
         let vec1 = self.vertex2 - self.vertex1

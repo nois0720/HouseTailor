@@ -16,42 +16,40 @@ enum TreeDirection {
 }
 
 class DCDelaunay {
-    static let calculateCount = 8
+    static let calculateCount = 14
     
-    class func triangulateDivideAndConquer(_ vertices: [HTFeatureVertex]) -> [Triangle] {
-        var triangles: [Triangle] = []
-        var triangleLists: [[Triangle]] = []
-        print(vertices.count)
+    class func triangulateDivideAndConquer(_ vertices: [HTFeatureVertex]) -> [[Triangle]] {
+        // 최종 결과를 담을 자료구조
+        var results: [[Triangle]] = []
         
         // nested function
         func DT(vertices: [HTFeatureVertex],
-                currentDirection: TreeDirection,
-                parentDirection: TreeDirection) -> [Triangle] {
+                currentDirection: TreeDirection) -> [Triangle] {
             let count = vertices.count
             
             switch count {
-            case 2: // do nothing
+            case 2:
+                // do nothing
                 return [Triangle]()
             case 3:
-//                triangles.append(Triangle(vertex1: vertices[0].originPosition,
-//                                 vertex2: vertices[1].originPosition,
-//                                 vertex3: vertices[2].originPosition))
                 return [Triangle(vertex1: vertices[0].originPosition,
                                  vertex2: vertices[1].originPosition,
                                  vertex3: vertices[2].originPosition)]
             default:
                 let splitIndex = count / 2
                 
+                // divide array by half
                 let left = Array(vertices[0..<splitIndex])
                 let right = Array(vertices[splitIndex..<count])
                 
-                let ltList = DT(vertices: left, currentDirection: .left, parentDirection: currentDirection)
-                let rtList = DT(vertices: right, currentDirection: .right, parentDirection: currentDirection)
-//
-//                print("left count: \(ltList.count)")
-//                print("right count: \(rtList.count)")
-//
+                // recursive call DT
+                let ltList = DT(vertices: left, currentDirection: .left)
+                let rtList = DT(vertices: right, currentDirection: .right)
+
+                var tList: [Triangle] = []
+                
                 if ltList.count > calculateCount && rtList.count > calculateCount {
+                    // left, right의 normal 평균 구함.
                     var leftNormalAvg = SCNVector3Zero
                     var rightNormalAvg = SCNVector3Zero
                     
@@ -61,18 +59,29 @@ class DCDelaunay {
                     leftNormalAvg.normalize()
                     rightNormalAvg.normalize()
                     
-                    print("left count: \(ltList.count)")
-                    print("right count: \(rtList.count)")
-                    print("normal's dot: \(leftNormalAvg.dot(rightNormalAvg))")
-                    // 0.6 => 60도
+                    // left, right의 사이각이 60도 이상인 경우, 아예 다른 평면이라고 판단.
+                    // left, right 결합하지않음. 또한, 정의된 방향과 반대에 있는 값들만 리턴하여 계산
+                    if leftNormalAvg.dot(rightNormalAvg) < 0.5 {
+                        switch currentDirection {
+                        case .left:
+                            results.append(ltList)
+                            return rtList
+                        case .right:
+                            results.append(rtList)
+                            return ltList
+                        case .root:
+                            break
+                        }
+                    }
                 }
                 
+                // left, right 삼각형들 결합.
                 let baseLR = findInitialBaseLR(left: left, right: right)
                 
                 var additionalTriangles: [Triangle] = []
                 findNextLR(left: left, right: right, baseLR: baseLR, triangles: &additionalTriangles)
                 
-                var tList: [Triangle] = []
+                // left, right, 연결 삼각형들 리스트에 추가 후 반환
                 tList += ltList
                 tList += rtList
                 tList += additionalTriangles
@@ -81,14 +90,14 @@ class DCDelaunay {
         }
         
         /* 점이 3개 미만이면 삼각형을 생성할 수 없음. */
-        guard vertices.count >= 3 else { return [Triangle]() }
+        guard vertices.count >= 3 else { return [[Triangle]]() }
         
         /* vertex array를 x좌표 순으로 정렬한다. */
         let vertices = vertices.sorted { $0.vertex.x < $1.vertex.x }
-        let result = DT(vertices: vertices, currentDirection: .root, parentDirection: .root)
-//        return DT(vertices: vertices, currentDirection: .root, parentDirection: .root)
+        let result = DT(vertices: vertices, currentDirection: .root)
+        results.append(result)
         
-        return result
+        return results
     }
     
     class func findNextLR(left: [HTFeatureVertex], right: [HTFeatureVertex], baseLR: Edge, triangles: inout [Triangle]) {
@@ -259,13 +268,13 @@ class DCDelaunay {
         return -dott / dist
     }
     
-    //if circumcircle of present point and baseLR points contain next point, return ture
-    
+    // 만약 circumcircle이 next candidate를 포함하면, true를 리턴.
     class private func isContain(baseLR: Edge,
                                  currentCandidate: HTFeatureVertex,
                                  nextCandidate: HTFeatureVertex) -> Bool {
         let p1 = baseLR.vertex1, p2 = baseLR.vertex2, p3 = currentCandidate
         
+        // p1, p2, p3를 지나는 외접원 구하기
         let d1 = p1.vertex.x * p1.vertex.x + p1.vertex.y * p1.vertex.y
         let d2 = p2.vertex.x * p2.vertex.x + p2.vertex.y * p2.vertex.y
         let d3 = p3.vertex.x * p3.vertex.x + p3.vertex.y * p3.vertex.y
@@ -280,6 +289,7 @@ class DCDelaunay {
             p2.vertex.x * (p1.vertex.y - p3.vertex.y) +
             p3.vertex.x * (p2.vertex.y - p1.vertex.y))
         
+        // 세 점이 한 직선 위에 있거나, 두 점이 일치하는 경우.
         if div == 0 { return false }
         
         // circumcircle

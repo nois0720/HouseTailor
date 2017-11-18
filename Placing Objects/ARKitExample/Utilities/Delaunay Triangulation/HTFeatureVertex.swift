@@ -8,6 +8,18 @@
 
 import ARKit
 
+/**
+ House Tailor Feature Vertex.
+ 
+ 해당 클래스의 인스턴스는 특정 feature point의 가상 평면의 2D좌표계와
+ Scene상의 3D좌표계 값을 둘다 가지고 있음.
+ 
+ - Properties:
+    - distToPlane: asdf
+    - vertex:
+    - originPosition:
+ - Parameter:
+ */
 class HTFeatureVertex {
     var distToPlane: Float
     var vertex: Vertex
@@ -19,13 +31,4 @@ class HTFeatureVertex {
         self.originPosition = originPosition
     }
 }
-
-//extension Vertex: Hashable {
-//    public var hashValue: Int {
-//        var seed = UInt(0)
-//        hash_combine(seed: &seed, value: UInt(bitPattern: x.hashValue))
-//        hash_combine(seed: &seed, value: UInt(bitPattern: y.hashValue))
-//        return Int(bitPattern: seed)
-//    }
-//}
 

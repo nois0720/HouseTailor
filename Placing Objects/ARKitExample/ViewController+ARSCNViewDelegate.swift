@@ -25,9 +25,7 @@ extension ViewController: ARSCNViewDelegate {
             abs(cameraEulerX) < 0.9 else { return }
 
         DispatchQueue.global().async {
-            guard let error = self.verticalPlaneDetector.detectVerticalPlane(point: screenCenter) else {
-                return
-            }
+            self.verticalPlaneDetector.detectVerticalPlane(point: screenCenter)
         }
     }
     

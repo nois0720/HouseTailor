@@ -163,6 +163,7 @@ class ViewController: UIViewController {
 		sceneView.delegate = self
 		sceneView.session = session
         
+        dtRootNode.name = "dtRootNode"
         sceneView.scene.rootNode.addChildNode(dtRootNode)
         /* debuging options */
 //         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
