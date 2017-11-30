@@ -150,10 +150,13 @@
                                     <constraint firstAttribute="width" constant="6" id="nzP-lH-hmk"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y8w-Zd-Xyj">
-                                <rect key="frame" x="322" y="122" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Test"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y8w-Zd-Xyj">
+                                <rect key="frame" x="330" y="124" width="30" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="EQu-NG-6Io"/>
+                                    <constraint firstAttribute="width" constant="30" id="rdi-ff-KcZ"/>
+                                </constraints>
+                                <state key="normal" image="FloorPlan"/>
                                 <connections>
                                     <segue destination="hdp-pk-LvL" kind="show" id="cN4-O2-5cc"/>
                                 </connections>
@@ -162,6 +165,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="j8v-6q-UBb" firstAttribute="height" secondItem="BgI-fb-Vqi" secondAttribute="height" id="2HQ-E0-kB3"/>
+                            <constraint firstItem="Y8w-Zd-Xyj" firstAttribute="top" secondItem="GBj-4O-Whc" secondAttribute="top" constant="60" id="2kX-wB-4W5"/>
                             <constraint firstItem="SuF-Os-zmb" firstAttribute="trailing" secondItem="E6c-py-dvH" secondAttribute="trailing" id="35g-18-nn3"/>
                             <constraint firstItem="j8v-6q-UBb" firstAttribute="width" secondItem="BgI-fb-Vqi" secondAttribute="width" id="4hN-fb-onM"/>
                             <constraint firstItem="BgI-fb-Vqi" firstAttribute="trailing" secondItem="E6c-py-dvH" secondAttribute="trailing" constant="-15" id="6c1-k7-y99"/>
@@ -183,6 +187,7 @@
                             <constraint firstItem="Xz3-j7-4K9" firstAttribute="centerY" secondItem="E6c-py-dvH" secondAttribute="centerY" id="oBu-Uj-BXo"/>
                             <constraint firstItem="GBj-4O-Whc" firstAttribute="bottom" secondItem="xcf-ic-uGo" secondAttribute="bottom" constant="15" id="sOL-M5-nW8"/>
                             <constraint firstItem="GBj-4O-Whc" firstAttribute="bottom" secondItem="wcv-F5-fv2" secondAttribute="bottom" constant="15" id="vLk-w8-8GJ"/>
+                            <constraint firstItem="Y8w-Zd-Xyj" firstAttribute="trailing" secondItem="GBj-4O-Whc" secondAttribute="trailing" constant="-15" id="ykY-oB-JH9"/>
                             <constraint firstItem="Xz3-j7-4K9" firstAttribute="centerX" secondItem="E6c-py-dvH" secondAttribute="centerX" id="zmX-te-Qb3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="GBj-4O-Whc"/>
@@ -519,6 +524,7 @@
     <resources>
         <image name="3dFiles" width="64" height="64"/>
         <image name="3dView" width="64" height="64"/>
+        <image name="FloorPlan" width="160" height="160"/>
         <image name="add" width="48" height="48"/>
         <image name="circle-128" width="128" height="128"/>
         <image name="restart" width="20" height="23"/>

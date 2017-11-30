@@ -76,7 +76,6 @@ class Line: SCNNode {
         startNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
         startNode.position = startNodePos
         
-        
         endNode = SCNNode(geometry: sphere)
         endNode.scale = SCNVector3(nodeRadius, nodeRadius, nodeRadius)
         
@@ -123,7 +122,7 @@ class Line: SCNNode {
         return true
     }
     
-    func update(to vector: SCNVector3) {
+    func update(to vector: SCNVector3, isCylinderLine: Bool = true) {
         lineNode?.removeFromParentNode()
 
         lenText.string = String(format: "%.2f m", distance(startPos: startNodePos(), endPos: vector))
@@ -135,12 +134,18 @@ class Line: SCNNode {
             self.addChildNode(endNode)
         }
         endNode.position = vector
-        lineNode = CylinderLine(parent: self,
-                                v1: startNodePos(),
-                                v2: vector,
-                                radius: 0.002,
-                                radSegmentCount: 16,
-                                color: UIColor.white)
+        
+        if isCylinderLine {
+            lineNode = CylinderLine(parent: self,
+                                    v1: startNodePos(),
+                                    v2: vector,
+                                    radius: 0.002,
+                                    radSegmentCount: 16,
+                                    color: UIColor.white)
+        } else {
+            lineNode = lineSCNNode(from: startNodePos(), to: vector)
+            lineNode?.setCategoryBitMask(2)
+        }
         
         self.addChildNode(lineNode!)
     }

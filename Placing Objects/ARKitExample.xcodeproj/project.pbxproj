@@ -49,6 +49,7 @@
 		E5C1CFAE1FA961C0006358EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5C1CFAD1FA961C0006358EA /* Assets.xcassets */; };
 		E5C1CFB01FA97FB3006358EA /* ViewController+Load3DFloorPlanDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5C1CFAF1FA97FB3006358EA /* ViewController+Load3DFloorPlanDelegate.swift */; };
 		E5DDE7101FB3F737008469F8 /* CoordinateSystem2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5DDE70F1FB3F737008469F8 /* CoordinateSystem2D.swift */; };
+		E5E1FA521FC53DF100199369 /* VerticalPlaneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E1FA511FC53DF100199369 /* VerticalPlaneManager.swift */; };
 		E5EF07111FB1768E0003AA1C /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5EF07101FB1768E0003AA1C /* Ray.swift */; };
 		E5EF07141FB28DDB0003AA1C /* Vertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5EF07131FB28DDB0003AA1C /* Vertex.swift */; };
 		E5EF07161FB28E240003AA1C /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5EF07151FB28E240003AA1C /* Triangle.swift */; };
@@ -107,6 +108,7 @@
 		E5C1CFAD1FA961C0006358EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E5C1CFAF1FA97FB3006358EA /* ViewController+Load3DFloorPlanDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Load3DFloorPlanDelegate.swift"; sourceTree = "<group>"; };
 		E5DDE70F1FB3F737008469F8 /* CoordinateSystem2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateSystem2D.swift; sourceTree = "<group>"; };
+		E5E1FA511FC53DF100199369 /* VerticalPlaneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPlaneManager.swift; sourceTree = "<group>"; };
 		E5EF07101FB1768E0003AA1C /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Ray.swift; path = ARKitExample/Ray.swift; sourceTree = SOURCE_ROOT; };
 		E5EF07131FB28DDB0003AA1C /* Vertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vertex.swift; sourceTree = "<group>"; };
 		E5EF07151FB28E240003AA1C /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
@@ -160,7 +162,7 @@
 		1488324A1EFC3E9C0043E0AB /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E5EF07121FB28DC40003AA1C /* Delaunay Triangulation */,
+				E5E1FA501FC2693900199369 /* Vertical Detection */,
 				E5AA58481FA869EE00C8B25B /* FloorPlanDefinition.swift */,
 				148832481EFC3E520043E0AB /* ARSCNViewExtensions.swift */,
 				C46356661EF9CC480080C8D9 /* SceneExtensions.swift */,
@@ -223,8 +225,8 @@
 			children = (
 				3929C48B1E89EC2C00E00B60 /* AppDelegate.swift */,
 				3929C48D1E89EC2C00E00B60 /* ViewController.swift */,
-				C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */,
 				1488323E1EFC378A0043E0AB /* ViewController+Actions.swift */,
+				C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */,
 				147D76491EFC36070000FEBF /* ViewController+ObjectSelection.swift */,
 				E5A782C71F96EDCD003C87BB /* ViewController+ModeSelectionViewController.swift */,
 				E5C1CFAF1FA97FB3006358EA /* ViewController+Load3DFloorPlanDelegate.swift */,
@@ -279,10 +281,20 @@
 				C40DF57B1EC2330700D9D59E /* Virtual Objects */,
 				392BB82B1EA19A7C00FBBAC8 /* Plane.swift */,
 				E5A782CA1F971EE1003C87BB /* Line.swift */,
-				E5A1B9DA1FB583A40026539E /* VerticalPlane.swift */,
-				E5A1B9DC1FB588E90026539E /* VerticalPlaneDetector.swift */,
 			);
 			path = ARObjects;
+			sourceTree = "<group>";
+		};
+		E5E1FA501FC2693900199369 /* Vertical Detection */ = {
+			isa = PBXGroup;
+			children = (
+				E5EF07121FB28DC40003AA1C /* Delaunay Triangulation */,
+				E5A1B9DA1FB583A40026539E /* VerticalPlane.swift */,
+				E5A1B9DC1FB588E90026539E /* VerticalPlaneDetector.swift */,
+				E5E1FA511FC53DF100199369 /* VerticalPlaneManager.swift */,
+				E5DDE70F1FB3F737008469F8 /* CoordinateSystem2D.swift */,
+			);
+			path = "Vertical Detection";
 			sourceTree = "<group>";
 		};
 		E5EF07121FB28DC40003AA1C /* Delaunay Triangulation */ = {
@@ -295,7 +307,6 @@
 				E5EF071B1FB28E810003AA1C /* Edge.swift */,
 				E5EF071D1FB28EC20003AA1C /* Delaunay.swift */,
 				E5EF071F1FB290150003AA1C /* HashFunction.swift */,
-				E5DDE70F1FB3F737008469F8 /* CoordinateSystem2D.swift */,
 				E58E8B5D1FBD3318005A2149 /* DivideConquerDelaunay.swift */,
 			);
 			path = "Delaunay Triangulation";
@@ -403,6 +414,7 @@
 				392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */,
 				148832451EFC3C160043E0AB /* TwoFingerGesture.swift in Sources */,
 				3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */,
+				E5E1FA521FC53DF100199369 /* VerticalPlaneManager.swift in Sources */,
 				E580F1AE1FA2185700A69AC7 /* VirtualObjectFrame.swift in Sources */,
 				E5EF07111FB1768E0003AA1C /* Ray.swift in Sources */,
 				E5A7764C1FA05D18008DD45A /* GridView.swift in Sources */,

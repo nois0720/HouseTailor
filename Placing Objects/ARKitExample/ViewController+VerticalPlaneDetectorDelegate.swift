@@ -8,20 +8,21 @@
 
 import ARKit
 
-extension ViewController: VerticalPlaneDetectorDelegate {
-    func verticalPlaneDetector(didAdd node: SCNNode) {
+extension ViewController: VerticalPlaneManagerDelegate {
+    
+    func verticalPlaneManager(didAdd node: SCNNode) {
         textManager.showMessage("수직 평면이 탐지되었습니다")
         
         print("add verticalPlane")
     }
     
-    func verticalPlaneDetector(didUpdate node: SCNNode) {
+    func verticalPlaneManager(didUpdate node: SCNNode) {
         textManager.showMessage("수직 평면이 업데이트되었습니다")
         
         print("update verticalPlane")
     }
     
-    func verticalPlaneDetector(didRemove node: SCNNode) {
+    func verticalPlaneManager(didRemove node: SCNNode) {
         print("remove verticalPlane")
     }
 }

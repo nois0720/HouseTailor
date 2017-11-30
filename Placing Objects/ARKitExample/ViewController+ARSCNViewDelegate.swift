@@ -25,7 +25,13 @@ extension ViewController: ARSCNViewDelegate {
             abs(cameraEulerX) < 0.9 else { return }
 
         DispatchQueue.global().async {
-            self.verticalPlaneDetector.detectVerticalPlane(point: screenCenter)
+            guard let verticalPlanes = self.verticalPlaneDetector.detectVerticalPlanes(point: screenCenter) else {
+                return
+            }
+            
+            verticalPlanes.forEach {
+                self.verticalPlaneManager.updatePlane(newVerticalPlane: $0)
+            }
         }
     }
     
@@ -38,6 +44,14 @@ extension ViewController: ARSCNViewDelegate {
         }
         
         if isMeasuring {
+            
+//            if let verticalPlane = sceneView.hitTestToVerticalPlane(at: screenCenter!),
+//                let ray = sceneView.rayFromScreenPos(screenCenter!) {
+//                let startPos = ray.intersectionPosition(with: verticalPlane)
+//                currentLine?.update(to: startPos)
+//                return
+//            }
+            
             guard self.currentLine?.updateWithLinesPlane(at: self.screenCenter!) == false else {
                 return
             }

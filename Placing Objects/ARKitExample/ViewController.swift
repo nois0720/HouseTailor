@@ -52,12 +52,13 @@ class ViewController: UIViewController {
     var rootFPNode = SCNNode()
     
     // MARK: VerticalPlane Detection
-    
     var verticalPlaneDetector: VerticalPlaneDetector!
+    var verticalPlaneManager: VerticalPlaneManager!
     
     // MARK: - Virtual Object Manipulation Properties
     
     var virtualObjectManager: VirtualObjectManager!
+//    var lineManager: MeasuringManager!
     
     var isLoadingObject: Bool = false {
         didSet {
@@ -157,7 +158,8 @@ class ViewController: UIViewController {
         virtualObjectManager.delegate = self
 		
         verticalPlaneDetector = VerticalPlaneDetector(sceneView: sceneView)
-        verticalPlaneDetector.delegate = self
+        verticalPlaneManager = VerticalPlaneManager(sceneView: sceneView)
+        verticalPlaneManager.delegate = self
 		// set up scene view
 		sceneView.setup()
 		sceneView.delegate = self

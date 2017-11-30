@@ -73,6 +73,10 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
             
             betweenAngle = acos(vec.dot(vec2) / (vec.length() * vec2.length()))
             
+            if vec.cross(vec2).y > 0 {
+                betweenAngle *= -1
+            }
+            
             guard let definition = floorPlanDefinition else { return }
             
             let rootFPNode = SCNNode()
@@ -90,7 +94,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate, RPPreviewView
                 let startPoint = point - subOffset
                 let endPoint = nextPoint - subOffset
                 let line = Line(sceneView: sceneView, startNodePos: startPoint, rootNode: rootFPNode)
-                line.update(to: endPoint)
+                line.update(to: endPoint, isCylinderLine: false)
                 
                 rootFPNode.addChildNode(line)
             }

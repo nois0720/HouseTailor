@@ -77,7 +77,7 @@ struct FloorPlan {
         
         let shapeLayer = CAShapeLayer()
         
-        shapeLayer.lineWidth = 1
+        shapeLayer.lineWidth = 0
         shapeLayer.opacity = 0.9
         shapeLayer.lineJoin = kCALineJoinRound
         shapeLayer.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).cgColor
@@ -113,6 +113,9 @@ struct FloorPlan {
                                     virtualObjectProjectPoints: $0.frame?.projectPoints())
             
             virtualObjectCodings.append(virtualObjectCoding)
+            if let projectionPoints = virtualObjectCoding.virtualObjectProjectPoints {
+                virtualObjectProjectPoints.append(projectionPoints)
+            }
         }
         
         self.floorPlanDefinition =
@@ -122,9 +125,7 @@ struct FloorPlan {
     }
     
     func draw(on view: UIView, with layerArray: NSMutableArray) {
-        
-        func drawPolygon(shape: CAShapeLayer, vectors: [SCNVector3]) {
-            let path = UIBezierPath()
+        func drawPolygon(path: UIBezierPath, shape: CAShapeLayer, vectors: [SCNVector3], close: Bool = false) {
             for (index, point) in vectors.enumerated() {
                 var nextPoint: SCNVector3
                 
@@ -147,29 +148,40 @@ struct FloorPlan {
             }
             
             var pathPoints = vectors.map { return SCNVector3ToGridCGPoint(vector: $0) }
+            
             path.move(to: pathPoints.first!)
             pathPoints.remove(at: 0)
             
             pathPoints.forEach { path.addLine(to: $0) }
-            path.close()
-            shape.path = path.cgPath
-            layerArray.add(shape)
+            
+            if close {
+                path.close()
+                
+                shape.path = path.cgPath
+                layerArray.add(shape)
+            }
         }
         
         func drawVirtualObject() {
+            let path = UIBezierPath()
             let shape = virtualObjectShape
             view.layer.addSublayer(shape)
             
-            virtualObjectProjectPoints.forEach {
-                drawPolygon(shape: shape, vectors: $0)
+            for (i, projectPoints) in virtualObjectProjectPoints.enumerated() {
+                if i == virtualObjectProjectPoints.count - 1 {
+                    drawPolygon(path: path, shape: shape, vectors: projectPoints, close: true)
+                } else {
+                    drawPolygon(path: path, shape: shape, vectors: projectPoints)
+                }
             }
         }
         
         func drawFloorPlan() {
+            let path = UIBezierPath()
             let shape = floorPlanShape
             view.layer.addSublayer(shape)
             
-            drawPolygon(shape: shape, vectors: floorPlanVectors)
+            drawPolygon(path: path, shape: shape, vectors: floorPlanVectors, close: true)
         }
         
         drawFloorPlan()

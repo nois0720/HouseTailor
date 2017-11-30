@@ -9,14 +9,15 @@
 import ARKit
 import Foundation
 
-enum TreeDirection {
-    case root
-    case left
-    case right
-}
-
 class DCDelaunay {
-    static let calculateCount = 14
+    
+    enum TreeDirection {
+        case root
+        case left
+        case right
+    }
+
+    static let calculateCount = 8
     
     class func triangulateDivideAndConquer(_ vertices: [HTFeatureVertex]) -> [[Triangle]] {
         // 최종 결과를 담을 자료구조
@@ -61,7 +62,7 @@ class DCDelaunay {
                     
                     // left, right의 사이각이 60도 이상인 경우, 아예 다른 평면이라고 판단.
                     // left, right 결합하지않음. 또한, 정의된 방향과 반대에 있는 값들만 리턴하여 계산
-                    if leftNormalAvg.dot(rightNormalAvg) < 0.5 {
+                    if leftNormalAvg.dot(rightNormalAvg) < 0.45 {
                         switch currentDirection {
                         case .left:
                             results.append(ltList)

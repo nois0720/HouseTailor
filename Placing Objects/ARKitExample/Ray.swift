@@ -30,10 +30,3 @@ struct Ray {
         return self.origin + self.direction * t
     }
 }
-
-struct FeatureHitTestResult {
-    let hitPosition: SCNVector3
-    let distanceFromRayOrigin: Float
-    let featurePos: SCNVector3
-    let featureDistanceFromHitResult: Float
-}

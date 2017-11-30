@@ -163,28 +163,30 @@ class VirtualObjectManager {
 	
 	func translate(_ object: VirtualObject, in sceneView: ARSCNView, basedOn screenPos: CGPoint) {
 		DispatchQueue.main.async {
-//            guard let ray = sceneView.rayFromScreenPos(screenPos),
-//                let pointCloud = sceneView.session.currentFrame?.rawFeaturePoints else {
-//                return
-//            }
+            guard let cameraTransform = sceneView.session.currentFrame?.camera.transform else {
+                return
+            }
+            // TODO: 이동불가 test 할것
+            if let verticalPlane = sceneView.hitTestToVerticalPlane(at: screenPos) {
+                self.delegate?.virtualObjectManager(self, couldNotPlaceVerticalPlane: object)
+                
+//                let originY = object.position.y
+//                var modifiedPosition = verticalPlane.position + verticalPlane.normal * object.boundingSphere.radius
+//                modifiedPosition.y = originY
 //
-//            let hitPosition = self.verticalHitTest(ray: ray, pointCloud: pointCloud)
-//
-//            guard hitPosition == nil else {
-//                self.delegate?.virtualObjectManager(self, couldNotPlaceVerticalPlane: object)
-//                return
-//            }
-//
+//                self.setPosition(for: object,
+//                                 position: float3(modifiedPosition),
+//                                 filterPosition: false,
+//                                 cameraTransform: cameraTransform)
+                return
+            }
+            
             let result = self.worldPositionFromScreenPosition(screenPos, in: sceneView)
 
             guard let newPosition = result.position else {
                 self.delegate?.virtualObjectManager(self, couldNotPlace: object)
                 return
             }
-			
-			guard let cameraTransform = sceneView.session.currentFrame?.camera.transform else {
-				return
-			}
 			
 			self.updateQueue.async {
 				self.setPosition(for: object,
@@ -224,22 +226,6 @@ class VirtualObjectManager {
         }
 
         object.simdPosition = pos
-
-        
-//        // 카메라와 virtual object의 최근 10개의 거리값을 이용하여, 평균값을 구함.
-//        // average값 사용하게 되면서 plane detection이 되지 않더라도 이동에 큰 문제는 없어보이도록 구현할 수 있음.
-//        let hitTestResultDistance = simd_length(cameraToPosition)
-//
-//        object.recentVirtualObjectDistances.append(hitTestResultDistance)
-//        object.recentVirtualObjectDistances.keepLast(10)
-//
-//        // hitTest에서 Plane과 hit되지 못한경우, 카메라로부터 떨어져있던 거리의 평균값 사용.
-//        if filterPosition, let averageDistance = object.recentVirtualObjectDistances.average {
-//            let averagedDistancePos = cameraWorldPos + simd_normalize(cameraToPosition) * averageDistance
-//            object.simdPosition = averagedDistancePos
-//        } else {
-//            object.simdPosition = pos
-//        }
 	}
 	
 	func checkIfObjectShouldMoveOntoPlane(anchor: ARPlaneAnchor, planeAnchorNode: SCNNode) {
